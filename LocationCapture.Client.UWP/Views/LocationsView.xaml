@@ -1,0 +1,101 @@
+﻿<views:ViewBase
+    x:Class="LocationCapture.Client.UWP.Views.LocationsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:LocationCapture.Models"
+    xmlns:converters="using:LocationCapture.Client.UWP.Converters"
+    xmlns:views="using:LocationCapture.Client.UWP.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="{x:Bind ViewModel.OnLoaded}">
+
+    <Page.Resources>
+        <DataTemplate x:Key="LocationTemplate" x:DataType="models:Location">
+            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SnapshotGroupTemplate" x:DataType="models:SnapshotGroup">
+            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+        </DataTemplate>
+
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:SelectionModeConverter x:Key="SelectionModeConverter" />
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <TextBlock Margin="10 10 5 5">Group Snapshots By</TextBlock>
+                <ComboBox Margin="10 5" Width="150"                      
+                      ItemsSource="{x:Bind ViewModel.GroupByOptions}"
+                      SelectedItem="{x:Bind ViewModel.GroupBy, Mode=TwoWay}"/>
+            </StackPanel>
+
+            <ListView ItemTemplate="{StaticResource LocationTemplate}" ItemsSource="{x:Bind ViewModel.Locations, Mode=OneWay}"
+                  SelectionMode="{x:Bind ViewModel.SelectionMode, Mode=OneWay, Converter={StaticResource SelectionModeConverter}}"
+                  IsMultiSelectCheckBoxEnabled="True" Grid.Row="1"
+                  Visibility="{x:Bind ViewModel.IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}"
+                  SelectionChanged="{x:Bind ViewModel.OnLocationSelected}" IsItemClickEnabled="{x:Bind ViewModel.IsItemClickEnabled, Mode=OneWay}"
+                  ItemClick="{x:Bind ViewModel.OnLocationClicked}"/>
+
+            <ListView ItemTemplate="{StaticResource SnapshotGroupTemplate}" ItemsSource="{x:Bind ViewModel.SnapshotsGroups, Mode=OneWay}" Grid.Row="1"
+                  Visibility="{x:Bind ViewModel.IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                  IsItemClickEnabled="True" ItemClick="{x:Bind ViewModel.OnSnapshotGroupClicked}"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="2"
+                    Visibility="{x:Bind ViewModel.IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                <TextBlock Margin="10 10 5 5">Location Name</TextBlock>
+                <TextBox Margin="10 5" Width="150" DataContext="{x:Bind ViewModel.SelectedLocation, Mode=OneWay}" 
+                     Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <CommandBar Grid.Row="3" 
+                    Visibility="{x:Bind ViewModel.IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}">
+                <AppBarButton Icon="Add" Label="Add Location" 
+                          Visibility="{x:Bind ViewModel.IsInBrowseMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.BeginAddLocation}"/>
+                <AppBarButton Icon="SelectAll" Label="Select Location"
+                          Visibility="{x:Bind ViewModel.IsInBrowseMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.BeginSelectLocation}"/>
+                <AppBarButton Icon="Setting" Label="App Settings"
+                          Visibility="{x:Bind ViewModel.IsInBrowseMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.GoToAppSettings}"/>
+
+                <AppBarButton Icon="Accept" Label="OK"
+                          Visibility="{x:Bind ViewModel.IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.SaveChanges}"/>
+                <AppBarButton Icon="Cancel" Label="Cancel"
+                          Visibility="{x:Bind ViewModel.IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.RevertChanges}"/>
+
+                <AppBarButton Icon="Rename" Label="Rename Location" 
+                          Visibility="{x:Bind ViewModel.IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.BeginRenameLocation}"/>
+                <AppBarButton Icon="Delete" Label="Delete Location(s)"
+                          Visibility="{x:Bind ViewModel.IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.RemoveSelectedLocations}"/>
+                <AppBarButton Icon="Sync" Label="Synchronize Location(s)"
+                          Visibility="{x:Bind ViewModel.IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                          Click="{x:Bind ViewModel.ImportSelectedLocations}"/>
+            </CommandBar>
+        </Grid>
+
+        <Grid Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2" />
+        <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" 
+                      IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}" Height="100" Width="100" />
+        <AppBarButton Icon="Stop" Foreground="Black" Background="White" Width="50" Height="50"
+                      HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 10"
+                      Click="{x:Bind ViewModel.StopLocationsImport}" VerticalContentAlignment="Center"
+                      BorderBrush="Black" BorderThickness="2"
+                      Visibility="{x:Bind ViewModel.IsImportInProgress, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+        </AppBarButton>
+    </Grid>
+</views:ViewBase>
