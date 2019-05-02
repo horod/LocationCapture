@@ -59,9 +59,9 @@ namespace LocationCapture.Client.UWP.Services
             return new AppSettings
             {
                 DbConnectionString = "Data Source=locationCapture.db",
-                MapsApiKey = "eaiSUkXtjMQP8rUvIIOp~xLS4Z-MTpzULJwMfEvNhZA~ArnCH6ejVKdymxOvWTls0-knJsEw-5Rh-oXDM0dq8wv40DWSnHU07RfzdCO8xQbu",
+                MapsApiKey = "Generate your Bing Maps API key by following the instructions: https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key",
                 WeatherApiUri = "http://api.openweathermap.org/data/2.5/weather",
-                WeatherApiKey = "64b8f091998633d5aa257ee3141b0b4c",
+                WeatherApiKey = "Generate your Openweather API key by following the instructions: https://openweathermap.org/appid",
                 LocationCaptureApiUri = "http://localhost:81/api"
             };
         }
