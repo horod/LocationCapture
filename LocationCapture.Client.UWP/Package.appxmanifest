@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="c4b0c35c-6efb-4987-8e65-4868d7253fdc" Publisher="CN=horod" Version="1.0.66.0" />
+  <Identity Name="c4b0c35c-6efb-4987-8e65-4868d7253fdc" Publisher="CN=horod" Version="1.0.69.0" />
   <mp:PhoneIdentity PhoneProductId="c4b0c35c-6efb-4987-8e65-4868d7253fdc" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>LocationCapture.Client.UWP</DisplayName>

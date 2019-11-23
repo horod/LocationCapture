@@ -37,6 +37,7 @@ namespace LocationCapture.Client.UWP.Services
                 var pictureFile = pictureFiles.FirstOrDefault(_ => _.Name == snapshot.PictureFileName);
                 var miniature = (pictureFile != null) ? await GetSnapshotMiniatureAsync(snapshot, pictureFile) : new SnapshotMiniature { Snapshot = snapshot };
                 results.Add(miniature);
+                if (miniature.Data == null) continue;
                 _miniaturesCache.AddSnapshotMiniature(miniature);
             }
 
@@ -65,10 +66,17 @@ namespace LocationCapture.Client.UWP.Services
         public async Task<byte[]> GetSnapshotContentAsync(LocationSnapshot snapshot)
         {
             var picturesFolder = KnownFolders.CameraRoll;
-            var pictureFile = await picturesFolder.GetFileAsync(snapshot.PictureFileName);
-            var picture = await GetPictureAsync(pictureFile);
-
-            return picture;
+            try
+            {
+                var pictureFile = await picturesFolder.GetFileAsync(snapshot.PictureFileName);
+                var picture = await GetPictureAsync(pictureFile);
+                return picture;
+            }
+            catch
+            {
+                // Picture does not exist in the specified location
+                return new byte[0];
+            }
         }
 
         private async Task<byte[]> GetPictureAsync(StorageFile pictureFile)
@@ -97,9 +105,16 @@ namespace LocationCapture.Client.UWP.Services
         {
             _miniaturesCache.RemoveSnapshotMiniature(snapshot.Id);
 
-            var picturesFolder = KnownFolders.CameraRoll;
-            var pictureFile = await picturesFolder.GetFileAsync(snapshot.PictureFileName);
-            await pictureFile.DeleteAsync();
+            try
+            {
+                var picturesFolder = KnownFolders.CameraRoll;
+                var pictureFile = await picturesFolder.GetFileAsync(snapshot.PictureFileName);
+                await pictureFile.DeleteAsync();
+            }
+            catch
+            {
+                // Picture does not exist in the specified location
+            }
         }
     }
 }

@@ -52,7 +52,6 @@ namespace LocationCapture.BL
             CancellationToken cancellationToken)
         {
             var snapshotsToImport = await _snapshotService.GetSnapshotsByLocationIdAsync(locationToImport.Id);
-            await _pictureService.GetSnapshotMiniaturesAsync(snapshotsToImport);
             var remoteSnapshots = await _snapshotServiceProxy.GetSnapshotsByLocationIdAsync(importedLocation.Id);
 
             foreach (var snapshotToImport in snapshotsToImport)
@@ -62,6 +61,7 @@ namespace LocationCapture.BL
                 if (remoteSnapshots.Any(_ => _.PictureFileName == snapshotToImport.PictureFileName)) continue;
 
                 var pictureToImport = await _pictureService.GetSnapshotContentAsync(snapshotToImport);
+                if (pictureToImport.Length == 0) continue;
                 snapshotToImport.LocationId = importedLocation.Id;
                 await _snapshotServiceProxy.AddSnapshotAsync(snapshotToImport);
                 await _pictureServiceProxy.SaveSnapshotContentAsync(snapshotToImport, pictureToImport);
