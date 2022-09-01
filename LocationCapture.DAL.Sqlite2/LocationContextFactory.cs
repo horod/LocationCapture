@@ -1,6 +1,6 @@
 ﻿using LocationCapture.BL;
 
-namespace LocationCapture.DAL.Sqlite
+namespace LocationCapture.DAL.Sqlite2
 {
     public class LocationContextFactory : ILocationContextFactory
     {

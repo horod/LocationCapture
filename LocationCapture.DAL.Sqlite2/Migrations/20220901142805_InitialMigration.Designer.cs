@@ -3,14 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using LocationCapture.DAL.Sqlite;
+using LocationCapture.DAL.Sqlite2;
 
-namespace LocationCapture.DAL.Sqlite.Migrations
+namespace LocationCapture.DAL.Sqlite2.Migrations
 {
     [DbContext(typeof(SqliteLocationDbContext))]
-    partial class LocationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220901142805_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2");
@@ -54,9 +55,9 @@ namespace LocationCapture.DAL.Sqlite.Migrations
             modelBuilder.Entity("LocationCapture.Models.LocationSnapshot", b =>
                 {
                     b.HasOne("LocationCapture.Models.Location")
-                        .WithMany("Snapshots")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("LocationSnapshots")
+                        .HasForeignKey("LocationId");
+                        //.OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

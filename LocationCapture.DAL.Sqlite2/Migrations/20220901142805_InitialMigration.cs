@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LocationCapture.DAL.Sqlite.Migrations
+namespace LocationCapture.DAL.Sqlite2.Migrations
 {
-    public partial class v1SQLiteMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,8 +32,7 @@ namespace LocationCapture.DAL.Sqlite.Migrations
                     Latitude = table.Column<double>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Longitude = table.Column<double>(nullable: false),
-                    PictureFileName = table.Column<string>(nullable: true)//,
-                    //PictureFolderPath = table.Column<string>(nullable: true)
+                    PictureFileName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,14 +41,14 @@ namespace LocationCapture.DAL.Sqlite.Migrations
                         name: "FK_LocationSnapshots_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id"/*,
+                        onDelete: ReferentialAction.Cascade*/);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_LocationSnapshots_LocationId",
-                table: "LocationSnapshots",
-                column: "LocationId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_LocationSnapshots_LocationId",
+            //    table: "LocationSnapshots",
+            //    column: "LocationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

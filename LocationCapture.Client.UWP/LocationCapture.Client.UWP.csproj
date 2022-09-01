@@ -11,7 +11,7 @@
     <AssemblyName>LocationCapture.Client.UWP</AssemblyName>
     <DefaultLanguage>pl-PL</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.15063.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.14393.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -24,7 +24,7 @@
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <PackageCertificateThumbprint>948291C53EF5A51F2D20DBA560D2503ACDD699AC</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>6A41E17749B8EAE2439413A27614011B0330A87A</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -219,9 +219,9 @@
       <Project>{21c850fb-d78a-4dd2-9a89-56bb94b1b034}</Project>
       <Name>LocationCapture.Client.MVVM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LocationCapture.DAL.Sqlite\LocationCapture.DAL.Sqlite.csproj">
-      <Project>{6807c35e-ecc9-4e43-9273-f09ce6870c4c}</Project>
-      <Name>LocationCapture.DAL.Sqlite</Name>
+    <ProjectReference Include="..\LocationCapture.DAL.Sqlite2\LocationCapture.DAL.Sqlite2.csproj">
+      <Project>{29f57e11-cf33-4fea-8574-e385c6cd5871}</Project>
+      <Name>LocationCapture.DAL.Sqlite2</Name>
     </ProjectReference>
     <ProjectReference Include="..\LocationCapture.DAL\LocationCapture.DAL.csproj">
       <Project>{5376bd9c-dbf6-468f-bd22-8762071a96d9}</Project>

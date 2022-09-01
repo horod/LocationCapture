@@ -6,6 +6,8 @@ namespace LocationCapture.DAL.SqlServer
     {
         private readonly string _connectionString;
 
+        public SqlServerLocationDbContext() : base() { }
+
         public SqlServerLocationDbContext(string connectionString) : base(connectionString)
         {
             _connectionString = connectionString;
@@ -13,7 +15,7 @@ namespace LocationCapture.DAL.SqlServer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.UseSqlServer(_connectionString ?? "Data Source=(localdb)\\MSSQLLocalDB;Database=LocationCapture.dev;Integrated Security=True");
             base.OnConfiguring(optionsBuilder);
         }
     }

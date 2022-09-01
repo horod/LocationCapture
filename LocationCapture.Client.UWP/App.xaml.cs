@@ -1,7 +1,7 @@
 ﻿using LocationCapture.Client.UWP.Infrastructure;
 using LocationCapture.Client.UWP.Services;
 using LocationCapture.Client.UWP.Views;
-using LocationCapture.DAL.Sqlite;
+using LocationCapture.DAL.Sqlite2;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;

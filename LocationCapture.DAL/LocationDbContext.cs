@@ -10,6 +10,8 @@ namespace LocationCapture.DAL
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationSnapshot> LocationSnapshots { get; set; }
 
+        protected LocationDbContext() : base() { }
+
         protected LocationDbContext(string dbIdentifier)
         {
             DbIdentifier = dbIdentifier;

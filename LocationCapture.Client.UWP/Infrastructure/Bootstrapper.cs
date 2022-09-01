@@ -3,7 +3,7 @@ using LocationCapture.Client.UWP.Factories;
 using LocationCapture.Client.UWP.Services;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.DAL;
-using LocationCapture.DAL.Sqlite;
+using LocationCapture.DAL.Sqlite2;
 using Microsoft.Practices.Unity;
 using Prism.Events;
 using System.Threading.Tasks;
