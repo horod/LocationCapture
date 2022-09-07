@@ -14,18 +14,21 @@ namespace LocationCapture.Client.UWP.Factories
         private readonly IWebClient _webClient;
         private readonly IBitmapConverter _bitmapConverter;
         private readonly IMiniaturesCache _miniaturesCache;
+        private readonly ILocationSnapshotDataService _snapshotDataService;
 
         public DataServiceFactory(ILocationContextFactory dataContextFactory,
             IAppSettingsProvider appSettingsProvider,
             IWebClient webClient,
             IBitmapConverter bitmapConverter,
-            IMiniaturesCache miniaturesCache)
+            IMiniaturesCache miniaturesCache,
+            ILocationSnapshotDataService snapshotDataService)
         {
             _dataContextFactory = dataContextFactory;
             _appSettingsProvider = appSettingsProvider;
             _webClient = webClient;
             _bitmapConverter = bitmapConverter;
             _miniaturesCache = miniaturesCache;
+            _snapshotDataService = snapshotDataService;
         }
 
         public ILocationDataService CreateLocationDataService(DataSourceType dataStorageType)
@@ -59,9 +62,9 @@ namespace LocationCapture.Client.UWP.Factories
             switch (dataStorageType)
             {
                 case DataSourceType.Local:
-                    return new PictureService(_bitmapConverter, _miniaturesCache);
+                    return new PictureService(_bitmapConverter, _miniaturesCache, CreateLocationSnapshotDataService(DataSourceType.Local));
                 case DataSourceType.Remote:
-                    return new PictureServiceProxy(_appSettingsProvider, _webClient, _miniaturesCache);
+                    return new PictureServiceProxy(_appSettingsProvider, _webClient, _miniaturesCache, CreateLocationSnapshotDataService(DataSourceType.Remote));
                 default:
                     throw new ArgumentOutOfRangeException("Could not recognize the specified data source type.");
             }

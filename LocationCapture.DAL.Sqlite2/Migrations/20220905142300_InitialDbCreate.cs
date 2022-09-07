@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LocationCapture.DAL.SqlServer.Migrations
+namespace LocationCapture.DAL.Sqlite2.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialDbCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +13,7 @@ namespace LocationCapture.DAL.SqlServer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -27,7 +26,7 @@ namespace LocationCapture.DAL.SqlServer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Altitude = table.Column<double>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
@@ -42,14 +41,14 @@ namespace LocationCapture.DAL.SqlServer.Migrations
                         name: "FK_LocationSnapshots_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
-                        principalColumn: "Id"/*,
-                        onDelete: ReferentialAction.Cascade*/);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_LocationSnapshots_LocationId",
-            //    table: "LocationSnapshots",
-            //    column: "LocationId");
+            migrationBuilder.CreateIndex(
+                name: "IX_LocationSnapshots_LocationId",
+                table: "LocationSnapshots",
+                column: "LocationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

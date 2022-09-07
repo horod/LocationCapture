@@ -15,12 +15,15 @@ namespace LocationCapture.Client.UWP.Services
     {
         private readonly IBitmapConverter _bitmapConverter;
         private readonly IMiniaturesCache _miniaturesCache;
+        private readonly ILocationSnapshotDataService _snapshotDataService;
 
         public PictureService(IBitmapConverter bitmapConverter,
-            IMiniaturesCache miniaturesCache)
+            IMiniaturesCache miniaturesCache,
+            ILocationSnapshotDataService snapshotDataService)
         {
             _bitmapConverter = bitmapConverter;
             _miniaturesCache = miniaturesCache;
+            _snapshotDataService = snapshotDataService;
         }
 
         public async Task<IEnumerable<SnapshotMiniature>> GetSnapshotMiniaturesAsync(IEnumerable<LocationSnapshot> snapshots)
@@ -63,6 +66,42 @@ namespace LocationCapture.Client.UWP.Services
             }
         }
 
+        public async Task<SnapshotMiniature> GetSnapshotMiniatureAsync(LocationSnapshot snapshot)
+        {
+            // Check if the miniature is already available in the cache
+            var miniature = _miniaturesCache.GetSnapshotMiniature(snapshot);
+            if (miniature?.Data?.Length > 0) return miniature;
+
+            // If not, try decoding it from LocationSnapshot.Thumbnail
+            if (!string.IsNullOrEmpty(snapshot.Thumbnail))
+            {
+                miniature = new SnapshotMiniature { Snapshot = snapshot, Data = Convert.FromBase64String(snapshot.Thumbnail) };
+                _miniaturesCache.AddSnapshotMiniature(miniature);
+                return miniature;
+            }
+
+            // Last resort, generate the miniature from scratch
+            var picturesFolder = KnownFolders.CameraRoll;
+
+            try
+            {
+                var pictureFile = await picturesFolder.GetFileAsync(snapshot.PictureFileName);
+                miniature = await GetSnapshotMiniatureAsync(snapshot, pictureFile);
+                if (miniature?.Data?.Length > 0)
+                {
+                    _miniaturesCache.AddSnapshotMiniature(miniature);
+                    snapshot.Thumbnail = Convert.ToBase64String(miniature.Data);
+                    await _snapshotDataService.UpdateSnapshotAsync(snapshot);
+                }
+                return miniature;
+            }
+            catch
+            {
+                // Picture does not exist in the specified location
+                return new SnapshotMiniature { Snapshot = snapshot, Data = new byte[0] };
+            }
+        }
+
         public async Task<byte[]> GetSnapshotContentAsync(LocationSnapshot snapshot)
         {
             var picturesFolder = KnownFolders.CameraRoll;
@@ -97,6 +136,9 @@ namespace LocationCapture.Client.UWP.Services
 
             var miniature = await GetSnapshotMiniatureAsync(snapshot, pictureFile);
             _miniaturesCache.AddSnapshotMiniature(miniature);
+
+            snapshot.Thumbnail = Convert.ToBase64String(miniature.Data);
+            await _snapshotDataService.UpdateSnapshotAsync(snapshot);
 
             return data.Length;
         }

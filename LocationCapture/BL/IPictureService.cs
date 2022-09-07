@@ -8,6 +8,8 @@ namespace LocationCapture.BL
     {
         Task<IEnumerable<SnapshotMiniature>> GetSnapshotMiniaturesAsync(IEnumerable<LocationSnapshot> snapshots);
 
+        Task<SnapshotMiniature> GetSnapshotMiniatureAsync(LocationSnapshot snapshot);
+
         Task<byte[]> GetSnapshotContentAsync(LocationSnapshot snapshot);
 
         Task<int> SaveSnapshotContentAsync(LocationSnapshot snapshot, byte[] data);

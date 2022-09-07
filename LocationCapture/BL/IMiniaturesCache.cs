@@ -7,6 +7,8 @@ namespace LocationCapture.BL
     {
         IEnumerable<SnapshotMiniature> GetSnapshotMiniatures(IEnumerable<LocationSnapshot> snapshots);
 
+        SnapshotMiniature GetSnapshotMiniature(LocationSnapshot snapshot);
+
         void AddSnapshotMiniature(SnapshotMiniature miniature);
 
         void RemoveSnapshotMiniature(int snapshotId);

@@ -17,5 +17,7 @@ namespace LocationCapture.WebAPI.Models
         public string PictureFileName { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        public string Thumbnail { get; set; }
     }
 }

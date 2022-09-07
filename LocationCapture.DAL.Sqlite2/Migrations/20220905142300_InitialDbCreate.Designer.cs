@@ -8,9 +8,10 @@ using LocationCapture.DAL.Sqlite2;
 namespace LocationCapture.DAL.Sqlite2.Migrations
 {
     [DbContext(typeof(SqliteLocationDbContext))]
-    partial class SqliteLocationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220905142300_InitialDbCreate")]
+    partial class InitialDbCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2");
@@ -43,8 +44,6 @@ namespace LocationCapture.DAL.Sqlite2.Migrations
                     b.Property<double>("Longitude");
 
                     b.Property<string>("PictureFileName");
-
-                    b.Property<string>("Thumbnail");
 
                     b.HasKey("Id");
 

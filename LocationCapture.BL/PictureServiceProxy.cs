@@ -1,6 +1,5 @@
 ﻿using LocationCapture.Models;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -15,15 +14,17 @@ namespace LocationCapture.BL
         private readonly IAppSettingsProvider _appSettingsProvider;
         private readonly IWebClient _webClient;
         private readonly IMiniaturesCache _miniaturesCache;
-        private ConcurrentDictionary<int, SnapshotMiniature> _snapshotMiniaturesCache = new ConcurrentDictionary<int, SnapshotMiniature>();
+        private readonly ILocationSnapshotDataService _snapshotDataService;
 
         public PictureServiceProxy(IAppSettingsProvider appSettingsProvider,
             IWebClient webClient,
-            IMiniaturesCache miniaturesCache)
+            IMiniaturesCache miniaturesCache,
+            ILocationSnapshotDataService snapshotDataService)
         {
             _appSettingsProvider = appSettingsProvider;
             _webClient = webClient;
             _miniaturesCache = miniaturesCache;
+            _snapshotDataService = snapshotDataService;
         }
 
         private async Task<string> GetPicturesUrl()
@@ -86,6 +87,43 @@ namespace LocationCapture.BL
             return miniatures;
         }
 
+        public async Task<SnapshotMiniature> GetSnapshotMiniatureAsync(LocationSnapshot snapshot)
+        {
+            // Check if the miniature is already available in the cache
+            var miniature = _miniaturesCache.GetSnapshotMiniature(snapshot);
+            if (miniature?.Data?.Length > 0) return miniature;
+
+            // If not, try decoding it from LocationSnapshot.Thumbnail
+            if (!string.IsNullOrEmpty(snapshot.Thumbnail))
+            {
+                miniature = new SnapshotMiniature { Snapshot = snapshot, Data = Convert.FromBase64String(snapshot.Thumbnail) };
+                _miniaturesCache.AddSnapshotMiniature(miniature);
+                return miniature;
+            }
+
+            // Last resort, generate the miniature from scratch on the server
+            var picturesUrl = await GetPicturesUrl();
+            picturesUrl = $"{picturesUrl}/{snapshot.Id}";
+
+            var result = await _webClient.GetAsync<ExpandoObject>(picturesUrl);
+            var descriptor = (IDictionary<string, object>)result;
+
+            miniature = new SnapshotMiniature
+            {
+                Snapshot = snapshot,
+                Data = Convert.FromBase64String(descriptor["thumbnail"].ToString())
+            };
+
+            if (miniature?.Data?.Length > 0)
+            {
+                _miniaturesCache.AddSnapshotMiniature(miniature);
+                snapshot.Thumbnail = Convert.ToBase64String(miniature.Data);
+                await _snapshotDataService.UpdateSnapshotAsync(snapshot);
+            }
+
+            return miniature;
+        }
+
         public async Task RemoveSnapshotContentAsync(LocationSnapshot snapshot)
         {
             _miniaturesCache.RemoveSnapshotMiniature(snapshot.Id);
@@ -107,6 +145,9 @@ namespace LocationCapture.BL
             await _webClient.PostAsync<object, object>(picturesUrl, payload);
             var miniatureBytes = await GetSnapshotContentAsync(snapshot, true);
             _miniaturesCache.AddSnapshotMiniature(new SnapshotMiniature { Snapshot = snapshot, Data = miniatureBytes});
+
+            snapshot.Thumbnail = Convert.ToBase64String(miniatureBytes);
+            await _snapshotDataService.UpdateSnapshotAsync(snapshot);
 
             return data.Length;
         }

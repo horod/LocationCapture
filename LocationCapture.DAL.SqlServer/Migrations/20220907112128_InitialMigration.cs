@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace LocationCapture.DAL.Sqlite2.Migrations
+namespace LocationCapture.DAL.SqlServer.Migrations
 {
     public partial class InitialMigration : Migration
     {
@@ -13,7 +14,7 @@ namespace LocationCapture.DAL.Sqlite2.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -26,13 +27,14 @@ namespace LocationCapture.DAL.Sqlite2.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Altitude = table.Column<double>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Longitude = table.Column<double>(nullable: false),
-                    PictureFileName = table.Column<string>(nullable: true)
+                    PictureFileName = table.Column<string>(nullable: true),
+                    Thumbnail = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -41,14 +43,14 @@ namespace LocationCapture.DAL.Sqlite2.Migrations
                         name: "FK_LocationSnapshots_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
-                        principalColumn: "Id"/*,
-                        onDelete: ReferentialAction.Cascade*/);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_LocationSnapshots_LocationId",
-            //    table: "LocationSnapshots",
-            //    column: "LocationId");
+            migrationBuilder.CreateIndex(
+                name: "IX_LocationSnapshots_LocationId",
+                table: "LocationSnapshots",
+                column: "LocationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

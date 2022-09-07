@@ -178,6 +178,7 @@ namespace LocationCapture.BL
                 snapshotToUpdate.Longitude = snapshot.Longitude;
                 snapshotToUpdate.Latitude = snapshot.Latitude;
                 snapshotToUpdate.Altitude = snapshot.Altitude;
+                snapshotToUpdate.Thumbnail = !string.IsNullOrEmpty(snapshot.Thumbnail) ? snapshot.Thumbnail : snapshotToUpdate.Thumbnail;
 
                 context.SaveChanges();
 

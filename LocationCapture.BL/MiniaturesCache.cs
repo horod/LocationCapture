@@ -24,6 +24,15 @@ namespace LocationCapture.BL
             }
         }
 
+        public SnapshotMiniature GetSnapshotMiniature(LocationSnapshot snapshot)
+        {
+            var result = new SnapshotMiniature { Snapshot = snapshot, Data = new byte[0] };
+
+            _snapshotMiniaturesCache.TryGetValue(snapshot.Id, out result);
+
+            return result;
+        }
+
         public void AddSnapshotMiniature(SnapshotMiniature miniature)
         {
             PreventCacheOverflow(miniature.Data.Length);

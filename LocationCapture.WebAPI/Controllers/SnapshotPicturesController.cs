@@ -52,11 +52,8 @@ namespace LocationCapture.WebAPI.Controllers
 
             foreach (var pictureFileName in pictureFileNames)
             {
-                var picturePath = GetPictureFilePath(pictureFileName);
-                if (PictureNotFound(picturePath)) return NotFound();
-
-                var thumbnailBytes = await _imageService.GetThumbnailAsync(picturePath);
-                var base64String = Convert.ToBase64String(thumbnailBytes);
+                var base64String = await GenerateBase64EncodedThumbnail(pictureFileName);
+                if (string.IsNullOrEmpty(base64String)) return NotFound();
                 var snapshotMiniature = new
                 {
                     PictureFileName = pictureFileName,
@@ -66,6 +63,38 @@ namespace LocationCapture.WebAPI.Controllers
             }
 
             return Ok(results);
+        }
+
+        [HttpGet("{snapshotId:int}")]
+        public async Task<IActionResult> GetMiniature(int snapshotId)
+        {
+            var snapshot = (await _locationSnapshotDataService.GetSnapshotsByIdsAsync(new int[] { snapshotId }))
+                .FirstOrDefault();
+
+            if (snapshot == null) return NotFound();
+
+            var base64String = await GenerateBase64EncodedThumbnail(snapshot.PictureFileName);
+
+            if (string.IsNullOrEmpty(base64String)) return NotFound();
+
+            var snapshotMiniature = new
+            {
+                snapshot.PictureFileName,
+                Thumbnail = base64String
+            };
+
+            return Ok(snapshotMiniature);
+        }
+
+        private async Task<string> GenerateBase64EncodedThumbnail(string pictureFileName)
+        {
+            var picturePath = GetPictureFilePath(pictureFileName);
+            if (PictureNotFound(picturePath)) return string.Empty;
+
+            var thumbnailBytes = await _imageService.GetThumbnailAsync(picturePath);
+            var base64String = Convert.ToBase64String(thumbnailBytes);
+
+            return base64String;
         }
 
         [HttpGet("{pictureFileName}")]

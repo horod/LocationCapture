@@ -42,5 +42,12 @@ namespace LocationCapture.Models
             get { return _DateCreated; }
             set { SetProperty(ref _DateCreated, value); }
         }
+
+        private string _Thumbnail;
+        public string Thumbnail
+        {
+            get { return _Thumbnail; }
+            set { SetProperty(ref _Thumbnail, value); }
+        }
     }
 }

@@ -120,13 +120,22 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 snapshots = await _locationSnapshotDataService.GetSnapshotsByIdsAsync(group.SnapshotIds);
             }
 
-            var miniatures = await _pictureService.GetSnapshotMiniaturesAsync(snapshots);
-            foreach(var miniature in miniatures)
-            {
-                var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
-                SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail});
-            }
             IsBusy = false;
+
+            foreach (var snapshot in snapshots)
+            {
+                var miniature = await _pictureService.GetSnapshotMiniatureAsync(snapshot);
+                var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
+                SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
+            }
+
+            //var miniatures = await _pictureService.GetSnapshotMiniaturesAsync(snapshots);
+            //foreach (var miniature in miniatures)
+            //{
+            //    var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
+            //    SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
+            //}
+            //IsBusy = false;
         }
 
         public void BeginSelectSnapshot()
