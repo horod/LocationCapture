@@ -63,8 +63,8 @@ namespace LocationCapture.BL
                 var pictureToImport = await _pictureService.GetSnapshotContentAsync(snapshotToImport);
                 if (pictureToImport.Length == 0) continue;
                 snapshotToImport.LocationId = importedLocation.Id;
-                await _snapshotServiceProxy.AddSnapshotAsync(snapshotToImport);
-                await _pictureServiceProxy.SaveSnapshotContentAsync(snapshotToImport, pictureToImport);
+                var importedSnapshot = await _snapshotServiceProxy.AddSnapshotAsync(snapshotToImport);
+                await _pictureServiceProxy.SaveSnapshotContentAsync(importedSnapshot, pictureToImport);
             }
         }
     }

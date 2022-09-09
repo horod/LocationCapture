@@ -128,14 +128,6 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
                 SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
             }
-
-            //var miniatures = await _pictureService.GetSnapshotMiniaturesAsync(snapshots);
-            //foreach (var miniature in miniatures)
-            //{
-            //    var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
-            //    SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
-            //}
-            //IsBusy = false;
         }
 
         public void BeginSelectSnapshot()

@@ -18,6 +18,7 @@ namespace LocationCapture.BL.UnitTests
         private IPictureService _pictureService;
         private Location _locationToImport;
         private List<LocationSnapshot> _snapshotsToImport;
+        private List<LocationSnapshot> _importedSnapshots;
         private byte[] _pictureData;
 
         [Fact]
@@ -55,8 +56,8 @@ namespace LocationCapture.BL.UnitTests
             await _locationServiceProxy.Received().AddLocationAsync(_locationToImport);
             await _snapshotServiceProxy.Received().AddSnapshotAsync(_snapshotsToImport[0]);
             await _snapshotServiceProxy.Received().AddSnapshotAsync(_snapshotsToImport[1]);
-            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_snapshotsToImport[0], _pictureData);
-            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_snapshotsToImport[1], _pictureData);
+            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_importedSnapshots[0], _pictureData);
+            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_importedSnapshots[1], _pictureData);
         }
 
         [Fact]
@@ -87,8 +88,8 @@ namespace LocationCapture.BL.UnitTests
             await _locationServiceProxy.DidNotReceive().AddLocationAsync(_locationToImport);
             await _snapshotServiceProxy.DidNotReceive().AddSnapshotAsync(_snapshotsToImport[0]);
             await _snapshotServiceProxy.Received().AddSnapshotAsync(_snapshotsToImport[1]);
-            await _pictureServiceProxy.DidNotReceive().SaveSnapshotContentAsync(_snapshotsToImport[0], _pictureData);
-            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_snapshotsToImport[1], _pictureData);
+            await _pictureServiceProxy.DidNotReceive().SaveSnapshotContentAsync(_importedSnapshots[0], _pictureData);
+            await _pictureServiceProxy.Received().SaveSnapshotContentAsync(_importedSnapshots[1], _pictureData);
         }
 
         private void SetUp()
@@ -127,6 +128,22 @@ namespace LocationCapture.BL.UnitTests
                 },
             };
 
+            _importedSnapshots = new List<LocationSnapshot>
+            {
+                new LocationSnapshot
+                {
+                    Id = 3,
+                    LocationId = _snapshotsToImport[0].LocationId,
+                    PictureFileName = _snapshotsToImport[0].PictureFileName
+                },
+                new LocationSnapshot
+                {
+                    Id = 4,
+                    LocationId = _snapshotsToImport[1].LocationId,
+                    PictureFileName = _snapshotsToImport[1].PictureFileName
+                },
+            };
+
             _snapshotService.GetSnapshotsByLocationIdAsync(Arg.Any<int>())
                 .Returns(_ =>
                 {
@@ -141,6 +158,26 @@ namespace LocationCapture.BL.UnitTests
                 {
                     var tcs = new TaskCompletionSource<byte[]>();
                     tcs.SetResult(_pictureData);
+                    return tcs.Task;
+                });
+
+            _snapshotServiceProxy.AddSnapshotAsync(Arg.Any<LocationSnapshot>())
+                .Returns(_ =>
+                {
+                    var snapshotToImport = _.Arg<LocationSnapshot>();
+                    LocationSnapshot importedSnapshot;
+
+                    if (snapshotToImport == _snapshotsToImport[0])
+                    {
+                        importedSnapshot = _importedSnapshots[0];
+                    }
+                    else
+                    {
+                        importedSnapshot = _importedSnapshots[1];
+                    }
+
+                    var tcs = new TaskCompletionSource<LocationSnapshot>();
+                    tcs.SetResult(importedSnapshot);
                     return tcs.Task;
                 });
         }

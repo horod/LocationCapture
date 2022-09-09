@@ -198,12 +198,26 @@ namespace LocationCapture.Client.MVVM.UnitTests
                     tcs.SetResult(_snapshots);
                     return tcs.Task;
                 });
-            _pictureService = Substitute.For<IPictureService>();            
-            _pictureService.GetSnapshotMiniaturesAsync(Arg.Any<IEnumerable<LocationSnapshot>>())
+            _pictureService = Substitute.For<IPictureService>();
+            _pictureService.GetSnapshotMiniatureAsync(Arg.Any<LocationSnapshot>())
                 .Returns(_ =>
                 {
-                    var tcs = new TaskCompletionSource<IEnumerable<SnapshotMiniature>>();
-                    tcs.SetResult(_miniatures);
+                    var snapshot = _.Arg<LocationSnapshot>();
+                    var tcs = new TaskCompletionSource<SnapshotMiniature>();
+
+                    if (snapshot == _snapshots[0])
+                    {
+                        tcs.SetResult(_miniatures[0]);
+                    }
+                    else if (snapshot == _snapshots[1])
+                    {
+                        tcs.SetResult(_miniatures[1]);
+                    }
+                    else
+                    {
+                        tcs.SetResult(_miniatures[2]);
+                    }
+
                     return tcs.Task;
                 });
             _bitmapConverter = Substitute.For<IBitmapConverter>();
