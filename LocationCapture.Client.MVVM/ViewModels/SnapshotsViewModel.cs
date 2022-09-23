@@ -78,6 +78,13 @@ namespace LocationCapture.Client.MVVM.ViewModels
             set { SetProperty(ref _IsBusy, value); }
         }
 
+        private string _LocationInfo;
+        public string LocationInfo
+        {
+            get { return _LocationInfo; }
+            set { SetProperty(ref _LocationInfo, value); }
+        }
+
         public bool CanAddSnapshot => _groupByCriteria == GroupByCriteria.None && !IsInSelectMode;
 
         public SnapshotsViewModel(ILocationSnapshotDataService locationSnapshotDataService,
@@ -114,10 +121,12 @@ namespace LocationCapture.Client.MVVM.ViewModels
             if (payload is Location location)
             {
                 snapshots = await _locationSnapshotDataService.GetSnapshotsByLocationIdAsync(location.Id);
+                LocationInfo = $"{location.Name} ({snapshots.Count()})";
             }
             else if (payload is SnapshotGroup group)
             {
                 snapshots = await _locationSnapshotDataService.GetSnapshotsByIdsAsync(group.SnapshotIds);
+                LocationInfo = $"{group.Name} ({snapshots.Count()})";
             }
 
             IsBusy = false;

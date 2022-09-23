@@ -7,6 +7,7 @@
     xmlns:views="using:LocationCapture.Client.UWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="using:System"
     mc:Ignorable="d" Loaded="{x:Bind ViewModel.OnLoaded}">
 
     <Page.Resources>
@@ -27,8 +28,8 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Margin="10" FontSize="20" FontWeight="Bold"
-                   DataContext="{x:Bind ViewModel.Parent, Mode=OneWay}"
-                   Text="{Binding Name}"/>
+                   DataContext="{x:Bind ViewModel, Mode=OneWay}"
+                   Text="{Binding LocationInfo}"/>
 
             <GridView Grid.Row="1" Margin="10 5" ItemTemplate="{StaticResource SnapshotMiniatureTemplate}" 
                   ItemsSource="{x:Bind ViewModel.SnapshotThumbnails, Mode=OneWay}"

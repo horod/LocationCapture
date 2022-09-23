@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="c4b0c35c-6efb-4987-8e65-4868d7253fdc" Publisher="CN=Lukasz.Horodniczy" Version="1.0.69.0" />
-  <mp:PhoneIdentity PhoneProductId="c4b0c35c-6efb-4987-8e65-4868d7253fdc" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="77236e2a-316f-44dc-91e6-d518c30be6a5" Publisher="CN=horod" Version="1.0.86.0" />
+  <mp:PhoneIdentity PhoneProductId="77236e2a-316f-44dc-91e6-d518c30be6a5" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>LocationCapture.Client.UWP</DisplayName>
+    <DisplayName>LocationCapture.Client.UWP2</DisplayName>
     <PublisherDisplayName>horod</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -14,8 +14,8 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LocationCapture.Client.UWP.App">
-      <uap:VisualElements DisplayName="Location Capture" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Location Capture" BackgroundColor="transparent">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LocationCapture.Client.UWP2.App">
+      <uap:VisualElements DisplayName="Location Capture 2" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Location Capture 2" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

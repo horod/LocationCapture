@@ -113,6 +113,11 @@ namespace LocationCapture.Client.UWP
 
         private async Task RunPendingDbMigrations()
         {
+            //var localFolder = ApplicationData.Current.LocalFolder;
+            //var picsFolder = KnownFolders.CameraRoll;
+            //var dbFile = await StorageFile.GetFileFromPathAsync(picsFolder.Path + @"\locationCapture.db");
+            //var copiedFile = await dbFile.CopyAsync(localFolder, dbFile.Name, NameCollisionOption.ReplaceExisting);
+
             var appSettings = await new AppSettingsProvider().GetAppSettingsAsync();
             using (var db = new SqliteLocationDbContext(appSettings.DbConnectionString))
             {
