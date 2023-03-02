@@ -3,6 +3,7 @@
     public class AppSettings
     {
         public string DbConnectionString { get; set; }
+        public string DbFileName { get; set; }
         public string MapsApiKey { get; set; }
         public string WeatherApiKey { get; set; }
         public string WeatherApiUri { get; set; }

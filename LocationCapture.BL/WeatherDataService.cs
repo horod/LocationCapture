@@ -52,7 +52,7 @@ namespace LocationCapture.BL
             result.Pressure = double.Parse(root?.Element("pressure")?.Attribute("value")?.Value ?? int.MinValue.ToString(), formatProvider);
             var windSpeedElement = root?.Element("wind")?.Element("speed");
             var windSpeed = double.Parse(windSpeedElement?.Attribute("value")?.Value ?? int.MinValue.ToString(), formatProvider);
-            result.WindSpeed = windSpeed * 0.001 * 3600;
+            result.WindSpeed = Math.Round(windSpeed * 0.001 * 3600, 2);
             result.WindSpeedName = windSpeedElement?.Attribute("name")?.Value;
             var windDirectionElement = root?.Element("wind")?.Element("direction");
             result.WindDirection = double.Parse(windDirectionElement?.Attribute("value")?.Value ?? int.MinValue.ToString(), formatProvider);

@@ -8,6 +8,7 @@
         SnapshotDetails,
         Geolocation,
         Weather,
-        Properties
+        Properties,
+        Logs
     }
 }

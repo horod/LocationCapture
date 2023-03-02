@@ -34,13 +34,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10" Text="Connection String" />
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding AppSettings.DbConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10" Text="DB File Name" />
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding AppSettings.DbFileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="10" Text="Maps API Key" />
                 <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding AppSettings.MapsApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Margin="10" Text="Weather API key" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="10" Text="Weather API Key" />
                 <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding AppSettings.WeatherApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="10" Text="Weather API URL" />
@@ -49,7 +49,7 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" Margin="10" Text="Web API URL" />
                 <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding AppSettings.LocationCaptureApiUri, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                
-                <TextBlock Grid.Row="5" Grid.Column="0" Margin="10" Text="Use web API" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Margin="10" Text="Use Web API" />
                 <CheckBox Grid.Row="5" Grid.Column="1" Margin="5" IsChecked="{Binding AppSettings.UseWebApi, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           Click="{x:Bind ViewModel.DataSourceChanged}" />
             </Grid>

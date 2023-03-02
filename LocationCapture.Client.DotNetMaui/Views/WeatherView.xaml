@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.WeatherView">
+
+    <ContentPage.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:StringFormatConverter x:Key="StringFormatConverter" />
+
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Label Text="{Binding WeatherForecast.CityName, Converter={StaticResource StringFormatConverter}, ConverterParameter=\{0\}, Mode=OneWay}"
+                           FontSize="20" />
+                <Label Text="{Binding WeatherForecast.CountryName, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\}, Mode=OneWay}"
+                           FontSize="20" />
+            </StackLayout>
+
+            <Label Text="{Binding WeatherForecast.Temperature, Converter={StaticResource StringFormatConverter}, ConverterParameter=\{0\}° C, Mode=OneWay}"
+                       FontSize="50" />
+
+            <Label Text="{Binding WeatherForecast.WeatherDescription, Mode=OneWay}" 
+                       FontSize="20" />
+
+            <Label Text="{Binding WeatherForecast.LastUpdate, Converter={StaticResource StringFormatConverter}, ConverterParameter=Last update: \{0\}, Mode=OneWay}"
+                       Margin="5" />
+
+            <Grid HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Text="{Binding WeatherForecast.TemperatureMin, Converter={StaticResource StringFormatConverter}, ConverterParameter=Temperature Min: \{0\}° C, Mode=OneWay}"
+                           Margin="5" Grid.Row="0" Grid.Column="0" />
+
+                <Label Text="{Binding WeatherForecast.TemperatureMax, Converter={StaticResource StringFormatConverter}, ConverterParameter=Temperature Max: \{0\}° C, Mode=OneWay}"
+                           Margin="5" Grid.Row="0" Grid.Column="1" />
+
+                <Label Text="{Binding WeatherForecast.Pressure, Converter={StaticResource StringFormatConverter}, ConverterParameter=Pressure: \{0\} hPa, Mode=OneWay}"
+                           Margin="5" Grid.Row="1" Grid.Column="0" />
+
+                <Label Text="{Binding WeatherForecast.Humidity, Converter={StaticResource StringFormatConverter}, ConverterParameter=Humidity: \{0\}%, Mode=OneWay}"
+                           Margin="5" Grid.Row="1" Grid.Column="1" />
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+                    <Label Text="{Binding WeatherForecast.WindSpeedName, Converter={StaticResource StringFormatConverter}, ConverterParameter=Wind: \{0\}, Mode=OneWay}" />
+                    <Label Text="{Binding WeatherForecast.WindSpeed, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\} km/h, Mode=OneWay}" />
+                    <Label Text="{Binding WeatherForecast.WindDirectionName, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\}, Mode=OneWay}" />
+                    <Label Text="{Binding WeatherForecast.WindDirection, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\}°, Mode=OneWay}" />
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Grid.Row="3" Grid.Column="0" Margin="5">
+                    <Label Text="{Binding WeatherForecast.CloudinessName, Converter={StaticResource StringFormatConverter}, ConverterParameter=Cloudiness: \{0\}, Mode=OneWay}" />
+                    <Label Text="{Binding WeatherForecast.Cloudiness, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\}%, Mode=OneWay}" />
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+                    <Label Text="{Binding WeatherForecast.PrecipitationName, Converter={StaticResource StringFormatConverter}, ConverterParameter=Precipitation: \{0\}, Mode=OneWay}" />
+                    <Label Text="{Binding WeatherForecast.Precipitation, Converter={StaticResource StringFormatConverter}, ConverterParameter=\, \{0\} mm, Mode=OneWay}" />
+                </StackLayout>
+
+                <Label Text="{Binding WeatherForecast.SunRise, Converter={StaticResource StringFormatConverter}, ConverterParameter=Sun Rise: \{0:HH:mm\}, Mode=OneWay}"
+                           Margin="5" Grid.Row="4" Grid.Column="0" />
+
+                <Label Text="{Binding WeatherForecast.SunSet, Converter={StaticResource StringFormatConverter}, ConverterParameter=Sun Set: \{0:HH:mm\}, Mode=OneWay}"
+                           Margin="5" Grid.Row="4" Grid.Column="1" />
+            </Grid>
+        </StackLayout>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+    </Grid>
+
+</views:ViewBase>

@@ -9,6 +9,7 @@ using Prism.Events;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Location = LocationCapture.Models.Location;
 
 namespace LocationCapture.Client.MVVM.ViewModels
 {
@@ -16,7 +17,6 @@ namespace LocationCapture.Client.MVVM.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly ICameraService _cameraService;
-        private readonly IBitmapConverter _bitmapConverter;
         private readonly IPictureService _pictureService;
         private readonly ILocationSnapshotDataService _locationSnapshotDataService;
         private readonly ILocationService _locationService;
@@ -33,7 +33,6 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
         public CameraViewModel(INavigationService navigationService,
             ICameraService cameraService,
-            IBitmapConverter bitmapConverter,
             IPictureService pictureService,
             ILocationSnapshotDataService locationSnapshotDataService,
             ILocationService locationService,
@@ -41,7 +40,6 @@ namespace LocationCapture.Client.MVVM.ViewModels
         {
             _navigationService = navigationService;
             _cameraService = cameraService;
-            _bitmapConverter = bitmapConverter;
             _pictureService = pictureService;
             _locationSnapshotDataService = locationSnapshotDataService;
             _locationService = locationService;
@@ -53,7 +51,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _cameraService.SetCaptureElement(sender);
         }
 
-        public async void OnLoaded()
+        public async Task OnLoaded()
         {
             await _cameraService.InitializeCamera();
         }
@@ -62,8 +60,15 @@ namespace LocationCapture.Client.MVVM.ViewModels
         {
             IsBusy = true;
             var pictureData = await _cameraService.CapturePhotoWithOrientationAsync();
+            if (pictureData.Length == 0)
+            {
+                IsBusy = false;
+                _cameraService.EndCapturingPhoto();
+                return;
+            }
 
-            var now = DateTime.Now.ToString("yyyyMMdd_HH_mm_ss");
+            var nowDt = DateTime.Now;
+            var now = nowDt.ToString("yyyyMMdd_HH_mm_ss");
             var pictureFileName = $"LocationCapture_{now}.jpg";
             var locationSnapshot = new LocationSnapshot
             {
@@ -72,12 +77,13 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 Longitude = double.MinValue,
                 Latitude = double.MinValue,
                 Altitude = double.MinValue,
-                DateCreated = DateTime.Now
+                DateCreated = nowDt
             };
 
             var newSnapshot = await _locationSnapshotDataService.AddSnapshotAsync(locationSnapshot);
             await _pictureService.SaveSnapshotContentAsync(newSnapshot, pictureData);
             IsBusy = false;
+            _cameraService.EndCapturingPhoto();
 
             var locationDescriptor = await _locationService.GetCurrentLocationAsync();
             if (!(await _locationSnapshotDataService.GetSnapshotsByIdsAsync(new[] { newSnapshot.Id })).Any()) return;
@@ -104,6 +110,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task DisposeAsync()
         {
             await _cameraService.CleanupCameraAsync();
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

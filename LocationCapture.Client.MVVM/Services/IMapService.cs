@@ -7,7 +7,7 @@ namespace LocationCapture.Client.MVVM.Services
     {
         Task SetMapControlAsync(object mapControl);
 
-        void ShowLocation(LocationSnapshot snapshot);
+        Task ShowLocation(LocationSnapshot snapshot);
 
         void ReleaseMapControl();
     }

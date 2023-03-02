@@ -10,5 +10,6 @@ namespace LocationCapture.Client.MVVM.Services
         Task<byte[]> CapturePhotoWithOrientationAsync();
         Task<object> CapturePictureAsync();
         Task CleanupCameraAsync();
+        void EndCapturingPhoto();
     }
 }

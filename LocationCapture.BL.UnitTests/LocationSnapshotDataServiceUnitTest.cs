@@ -140,7 +140,7 @@ namespace LocationCapture.BL.UnitTests
                 new SnapshotGroup{Name = "40° W - 30° W", SnapshotIds = new List<int>{15}},
                 new SnapshotGroup{Name = "30° W - 20° W", SnapshotIds = new List<int>{16}},
                 new SnapshotGroup{Name = "20° W - 10° W", SnapshotIds = new List<int>{17}},
-                new SnapshotGroup{Name = "10° W - 0° W", SnapshotIds = new List<int>{18}},
+                new SnapshotGroup{Name = "10° W - -0° W", SnapshotIds = new List<int>{18}},
                 new SnapshotGroup{Name = "0° E - 10° E", SnapshotIds = new List<int>{19}},
                 new SnapshotGroup{Name = "10° E - 20° E", SnapshotIds = new List<int>{20}},
                 new SnapshotGroup{Name = "20° E - 30° E", SnapshotIds = new List<int>{21}},
@@ -223,7 +223,7 @@ namespace LocationCapture.BL.UnitTests
                 new SnapshotGroup{Name = "40° S - 30° S", SnapshotIds = new List<int>{6}},
                 new SnapshotGroup{Name = "30° S - 20° S", SnapshotIds = new List<int>{7}},
                 new SnapshotGroup{Name = "20° S - 10° S", SnapshotIds = new List<int>{8}},
-                new SnapshotGroup{Name = "10° S - 0° S", SnapshotIds = new List<int>{9}},
+                new SnapshotGroup{Name = "10° S - -0° S", SnapshotIds = new List<int>{9}},
                 new SnapshotGroup{Name = "0° N - 10° N", SnapshotIds = new List<int>{10}},
                 new SnapshotGroup{Name = "10° N - 20° N", SnapshotIds = new List<int>{11}},
                 new SnapshotGroup{Name = "20° N - 30° N", SnapshotIds = new List<int>{12}},
@@ -281,7 +281,7 @@ namespace LocationCapture.BL.UnitTests
             };
             var expected = new List<SnapshotGroup>
             {
-                new SnapshotGroup{Name = "1000 MBSL - 0 MBSL", SnapshotIds = new List<int>{1}},
+                new SnapshotGroup{Name = "1000 MBSL - -0 MBSL", SnapshotIds = new List<int>{1}},
                 new SnapshotGroup{Name = "0 MASL - 1000 MASL", SnapshotIds = new List<int>{2}},
                 new SnapshotGroup{Name = "1000 MASL - 2000 MASL", SnapshotIds = new List<int>{3}},
                 new SnapshotGroup{Name = "2000 MASL - 3000 MASL", SnapshotIds = new List<int>{4}},
@@ -312,7 +312,7 @@ namespace LocationCapture.BL.UnitTests
             };
             var expected = new List<SnapshotGroup>
             {
-                new SnapshotGroup{Name = "1000 MBSL - 0 MBSL", SnapshotIds = new List<int>{1,2}},
+                new SnapshotGroup{Name = "1000 MBSL - -0 MBSL", SnapshotIds = new List<int>{1,2}},
                 new SnapshotGroup{Name = "2000 MASL - 3000 MASL", SnapshotIds = new List<int>{3,4}},
                 new SnapshotGroup{Name = "6000 MASL - 7000 MASL", SnapshotIds = new List<int>{5,6}},
                 new SnapshotGroup{Name = "8000 MASL - 9000 MASL", SnapshotIds = new List<int>{7,8}}

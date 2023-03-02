@@ -25,7 +25,7 @@ namespace LocationCapture.Client.UWP.Services
             _mapControl.MapServiceToken = appSettings.MapsApiKey;
         }
 
-        public void ShowLocation(LocationSnapshot snapshot)
+        public Task ShowLocation(LocationSnapshot snapshot)
         {
             BasicGeoposition snapshotPosition = new BasicGeoposition { Latitude = snapshot.Latitude, Longitude = snapshot.Longitude };
             Geopoint snapshotPoint = new Geopoint(snapshotPosition);
@@ -39,6 +39,8 @@ namespace LocationCapture.Client.UWP.Services
             _mapControl.MapElements.Add(snapshotIcon);
             _mapControl.Center = snapshotPoint;
             _mapControl.ZoomLevel = 15;
+
+            return Task.CompletedTask;
         }
 
         public void ReleaseMapControl()

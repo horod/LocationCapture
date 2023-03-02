@@ -14,21 +14,18 @@ namespace LocationCapture.Client.UWP.Factories
         private readonly IWebClient _webClient;
         private readonly IBitmapConverter _bitmapConverter;
         private readonly IMiniaturesCache _miniaturesCache;
-        private readonly ILocationSnapshotDataService _snapshotDataService;
 
         public DataServiceFactory(ILocationContextFactory dataContextFactory,
             IAppSettingsProvider appSettingsProvider,
             IWebClient webClient,
             IBitmapConverter bitmapConverter,
-            IMiniaturesCache miniaturesCache,
-            ILocationSnapshotDataService snapshotDataService)
+            IMiniaturesCache miniaturesCache)
         {
             _dataContextFactory = dataContextFactory;
             _appSettingsProvider = appSettingsProvider;
             _webClient = webClient;
             _bitmapConverter = bitmapConverter;
             _miniaturesCache = miniaturesCache;
-            _snapshotDataService = snapshotDataService;
         }
 
         public ILocationDataService CreateLocationDataService(DataSourceType dataStorageType)

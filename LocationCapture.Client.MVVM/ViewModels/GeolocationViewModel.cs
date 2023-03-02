@@ -3,6 +3,7 @@ using LocationCapture.Client.MVVM.Infrastructure;
 using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
+using System.Threading.Tasks;
 
 namespace LocationCapture.Client.MVVM.ViewModels
 {
@@ -25,17 +26,22 @@ namespace LocationCapture.Client.MVVM.ViewModels
             await _mapService.SetMapControlAsync(sender);
         }
 
-        public void OnLoaded()
+        public async Task OnLoaded()
         {
             var navParam = (SnapshotDetailsViewNavParams)NavigationParam;
             var snapshot = navParam.LocationSnapshot;
-            _mapService.ShowLocation(snapshot);
+            await _mapService.ShowLocation(snapshot);
         }
 
         public void GoBack()
         {
             _mapService.ReleaseMapControl();
             _navigationService.GoTo(AppViews.SnapshotDetails, NavigationParam);
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }
