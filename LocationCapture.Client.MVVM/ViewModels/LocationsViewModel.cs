@@ -5,12 +5,12 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Enums;
 using LocationCapture.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Location = LocationCapture.Models.Location;
 using SelectionMode = LocationCapture.Client.MVVM.Enums.SelectionMode;
 
 namespace LocationCapture.Client.MVVM.ViewModels
@@ -196,7 +196,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         }
 
         public async void BeginRenameLocation()
-        {            
+        {
             PopulateSelectedLocation();
             if (SelectedLocation == null)
             {
@@ -224,7 +224,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
         public async Task SaveChanges()
         {
-            if(string.IsNullOrEmpty(SelectedLocation.Name))
+            if (string.IsNullOrEmpty(SelectedLocation.Name))
             {
                 await _dialogService.ShowAsync("Location name cannot be empty.");
                 return;
@@ -236,8 +236,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 var newLocation = await _locationDataService.AddLocationAsync(SelectedLocation);
                 Locations.Add(newLocation);
             }
-            else if(_editOperation == EditOperation.Rename)
-            {                
+            else if (_editOperation == EditOperation.Rename)
+            {
                 var renamedLocation = await _locationDataService.RenameLocationAsync(SelectedLocation.Id, SelectedLocation.Name);
                 Locations.First(_ => _.Id == renamedLocation.Id).Name = renamedLocation.Name;
             }
@@ -284,10 +284,10 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
             IsBusy = true;
             var selectedLocations = SelectedLocations.ToList();
-            foreach(var selLoc in selectedLocations)
+            foreach (var selLoc in selectedLocations)
             {
                 var snapshots = await _locationSnapshotDataService.GetSnapshotsByLocationIdAsync(selLoc.Id);
-                var deletionTasks = snapshots.Select(async _ => 
+                var deletionTasks = snapshots.Select(async _ =>
                 {
                     await _locationSnapshotDataService.RemoveSnapshotAsync(_.Id);
                     await _pictureService.RemoveSnapshotContentAsync(_);
@@ -396,6 +396,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 SnapshotsIdsource = payload
             };
             _navigationService.GoTo(AppViews.Snapshots, navParam);
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

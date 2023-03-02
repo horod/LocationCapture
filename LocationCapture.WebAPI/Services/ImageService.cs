@@ -18,7 +18,7 @@ namespace LocationCapture.WebAPI.Services
                 {
                     ExifRotate(image);
 
-                    int width = 100;
+                    int width = 110;
                     int X = image.Width;
                     int Y = image.Height;
                     int height = (width * Y) / X;

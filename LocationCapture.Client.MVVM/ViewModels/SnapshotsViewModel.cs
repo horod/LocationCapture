@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Location = LocationCapture.Models.Location;
 using SelectionMode = LocationCapture.Client.MVVM.Enums.SelectionMode;
 
 namespace LocationCapture.Client.MVVM.ViewModels
@@ -78,12 +79,12 @@ namespace LocationCapture.Client.MVVM.ViewModels
             set { SetProperty(ref _IsBusy, value); }
         }
 
-        private string _LocationInfo;
-        public string LocationInfo
+        public string LocationInfo => Parent switch
         {
-            get { return _LocationInfo; }
-            set { SetProperty(ref _LocationInfo, value); }
-        }
+            Location location => $"{location.Name} ({SnapshotThumbnails.Count})",
+            SnapshotGroup group => $"{group.Name} ({SnapshotThumbnails.Count})",
+            _ => string.Empty
+        };
 
         public bool CanAddSnapshot => _groupByCriteria == GroupByCriteria.None && !IsInSelectMode;
 
@@ -110,6 +111,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnLoaded()
         {
             IsBusy = true;
+
             var navParam = (SnapshotsViewNavParams)NavigationParam;
             _groupByCriteria = navParam.GroupByCriteria;
             var payload = navParam.SnapshotsIdsource;
@@ -121,12 +123,10 @@ namespace LocationCapture.Client.MVVM.ViewModels
             if (payload is Location location)
             {
                 snapshots = await _locationSnapshotDataService.GetSnapshotsByLocationIdAsync(location.Id);
-                LocationInfo = $"{location.Name} ({snapshots.Count()})";
             }
             else if (payload is SnapshotGroup group)
             {
                 snapshots = await _locationSnapshotDataService.GetSnapshotsByIdsAsync(group.SnapshotIds);
-                LocationInfo = $"{group.Name} ({snapshots.Count()})";
             }
 
             IsBusy = false;
@@ -137,6 +137,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
                 SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
             }
+
+            RaisePropertyChanged(nameof(LocationInfo));
         }
 
         public void BeginSelectSnapshot()
@@ -171,13 +173,14 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 await _pictureService.RemoveSnapshotContentAsync(removedSnapshot);
                 SnapshotThumbnails.Remove(SnapshotThumbnails.First(_ => _.Snapshot.Id == removedSnapshot.Id));
             };
+            RaisePropertyChanged(nameof(LocationInfo));
             SetDefaultView();
             IsBusy = false;
         }
 
         public void GoBack()
         {
-            if(!IsInSelectMode)
+            if (!IsInSelectMode)
             {
                 _navigationService.GoTo(AppViews.Locations, _groupByCriteria);
             }
@@ -208,6 +211,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 SnapshotsViewState = NavigationParam
             };
             _navigationService.GoTo(AppViews.SnapshotDetails, navParam);
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

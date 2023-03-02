@@ -45,6 +45,8 @@ namespace LocationCapture.Client.UWP.Services
 
         private async Task WriteAppSettings(AppSettings appSettings)
         {
+            appSettings.DbConnectionString = $"Data Source={appSettings.DbFileName}";
+
             var localFolder = ApplicationData.Current.LocalFolder;
             var appSettingsFile = await localFolder.CreateFileAsync(AppSettingsFileName, CreationCollisionOption.ReplaceExisting);
             var serializer = new XmlSerializer(typeof(AppSettings));
@@ -59,6 +61,7 @@ namespace LocationCapture.Client.UWP.Services
             return new AppSettings
             {
                 DbConnectionString = "Data Source=locationCapture.db",
+                DbFileName = "locationCapture.db",
                 MapsApiKey = "Generate your Bing Maps API key by following the instructions: https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key",
                 WeatherApiUri = "http://api.openweathermap.org/data/2.5/weather",
                 WeatherApiKey = "Generate your Openweather API key by following the instructions: https://openweathermap.org/appid",

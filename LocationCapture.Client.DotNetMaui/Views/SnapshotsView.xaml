@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:LocationCapture.Client.MVVM.Models;assembly=LocationCapture.Client.MVVM"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.SnapshotsView">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="SnapshotMiniatureTemplate" x:DataType="models:SnapshotThumbnail">
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnThumbnailTapped" />
+                </Grid.GestureRecognizers>
+                
+                <Image Source="{Binding Thumbnail}" Aspect="AspectFill" WidthRequest="110" HeightRequest="110" Margin="0,1,0,1" />
+            </Grid>
+        </DataTemplate>
+
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:SelectionModeConverter x:Key="SelectionModeConverter" />
+
+        <Style x:Key="Hyperlink" TargetType="Label">
+            <Setter Property="TextColor" Value="Blue" />
+            <Setter Property="TextDecorations" Value="Underline" />
+            <Setter Property="Margin" Value="10,10,0,10" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Margin="10" FontSize="20" FontAttributes="Bold"
+                   Text="{Binding LocationInfo, Mode=OneWay}"/>
+
+            <CollectionView x:Name="snapshots"
+                            Grid.Row="1" Margin="10,0,10,0"
+                            ItemTemplate="{StaticResource SnapshotMiniatureTemplate}" 
+                            ItemsSource="{Binding SnapshotThumbnails, Mode=OneWay}"
+                            SelectionMode="{Binding SelectionMode, Mode=OneWay, Converter={StaticResource SelectionModeConverter}}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="3" VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+
+            <HorizontalStackLayout Grid.Row="2">
+                <Label Text="Add Snapshot"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding CanAddSnapshot, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSnapshotAdding" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Select Snapshot"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSwitchedToSelectMode" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Delete Snapshot"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRemoveSelectedSnapshot" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+    </Grid>
+</views:ViewBase>

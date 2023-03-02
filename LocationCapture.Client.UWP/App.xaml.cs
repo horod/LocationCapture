@@ -32,8 +32,6 @@ namespace LocationCapture.Client.UWP
         {
             await SetUpLogger();
 
-            await RunPendingDbMigrations();
-
             Frame rootFrame = Window.Current.Content as Frame;
 
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -77,7 +75,7 @@ namespace LocationCapture.Client.UWP
             deferral.Complete();
         }
 
-        private async void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private async void OnUnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             e.Handled = true;
             Log.Fatal(e.Exception, "Unhandled exception");
@@ -107,22 +105,14 @@ namespace LocationCapture.Client.UWP
 
             var logFilePath = Path.Combine(appLogsFolder.Path, logFileName);
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(logFilePath, Serilog.Events.LogEventLevel.Debug)
+                .WriteTo.File(logFilePath, Serilog.Events.LogEventLevel.Debug, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
         }
 
-        private async Task RunPendingDbMigrations()
-        {
-            //var localFolder = ApplicationData.Current.LocalFolder;
-            //var picsFolder = KnownFolders.CameraRoll;
-            //var dbFile = await StorageFile.GetFileFromPathAsync(picsFolder.Path + @"\locationCapture.db");
-            //var copiedFile = await dbFile.CopyAsync(localFolder, dbFile.Name, NameCollisionOption.ReplaceExisting);
-
-            var appSettings = await new AppSettingsProvider().GetAppSettingsAsync();
-            using (var db = new SqliteLocationDbContext(appSettings.DbConnectionString))
-            {
-                db.Database.Migrate();
-            }
-        }
+        // In case we need to restore the local DB file
+        //var localFolder = ApplicationData.Current.LocalFolder;
+        //var picsFolder = KnownFolders.CameraRoll;
+        //var dbFile = await StorageFile.GetFileFromPathAsync(picsFolder.Path + @"\locationCapture.db");
+        //var copiedFile = await dbFile.CopyAsync(localFolder, dbFile.Name, NameCollisionOption.ReplaceExisting);
     }
 }

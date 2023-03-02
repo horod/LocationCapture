@@ -70,7 +70,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _eventAggregator = eventAggregator;
 
             AreDetailsVisible = false;
-            IsCommandBarVisible = true;
+            IsCommandBarVisible = false;
         }
 
         public async Task OnLoaded()
@@ -115,6 +115,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public void ImageTapped()
         {
             IsCommandBarVisible = !IsCommandBarVisible;
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

@@ -5,6 +5,7 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace LocationCapture.Client.MVVM.ViewModels
 {
@@ -45,9 +46,9 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _loggingService = loggingService;
         }
 
-        public async void OnLoaded()
+        public async Task OnLoaded()
         {
-            if(!_connectivityService.IsInternetAvailable())
+            if (!_connectivityService.IsInternetAvailable())
             {
                 _loggingService.Warning("Could not load weather data. No Internet connection available.");
                 await _dialogService.ShowAsync("Could not load weather data. No Internet connection available.");
@@ -62,7 +63,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             {
                 WeatherForecast = await _weatherDataService.GetWeatherDataForLocationAsync(snapshot);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _loggingService.Warning("Weather API error. This might indicate an incorrect API URI or key. Details: {Ex}", ex);
                 await _dialogService.ShowAsync("Weather API error. This might indicate an incorrect API URI or key.");
@@ -75,6 +76,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public void GoBack()
         {
             _navigationService.GoTo(AppViews.SnapshotDetails, NavigationParam);
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

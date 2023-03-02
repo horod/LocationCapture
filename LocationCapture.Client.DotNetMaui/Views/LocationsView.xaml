@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:LocationCapture.Models;assembly=LocationCapture"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             xmlns:local="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.LocationsView">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="LocationTemplate" x:DataType="models:Location">
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLocationTapped" />
+                </Grid.GestureRecognizers>
+                
+                <Label Text="{Binding Name, Mode=OneWay}" Margin="10,5" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SnapshotGroupTemplate" x:DataType="models:SnapshotGroup">
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSnapshotGroupTapped" />
+                </Grid.GestureRecognizers>
+                <Label Text="{Binding Name, Mode=OneWay}" Margin="10,5" />
+            </Grid>
+        </DataTemplate>
+
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <converters:SelectionModeConverter x:Key="SelectionModeConverter" />
+
+        <Style x:Key="Hyperlink" TargetType="Label">
+            <Setter Property="TextColor" Value="Blue" />
+            <Setter Property="TextDecorations" Value="Underline" />
+            <Setter Property="Margin" Value="10,10,0,10" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <HorizontalStackLayout Grid.Row="0">
+                <Label Margin="10,10,5,5" FontAttributes="Bold">Group Snapshots By:</Label>
+                <Picker Margin="10,0" WidthRequest="150"                      
+                        ItemsSource="{Binding GroupByOptions}"
+                        SelectedItem="{Binding GroupBy, Mode=TwoWay}"/>
+            </HorizontalStackLayout>
+
+            <CollectionView x:Name="locations"
+                            Grid.Row="1"
+                            ItemTemplate="{StaticResource LocationTemplate}" 
+                            ItemsSource="{Binding Locations, Mode=OneWay}"
+                            IsVisible="{Binding IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}"
+                            SelectionMode="{Binding SelectionMode, Mode=OneWay, Converter={StaticResource SelectionModeConverter}}" />
+
+            <CollectionView Grid.Row="1"
+                            ItemTemplate="{StaticResource SnapshotGroupTemplate}" 
+                            ItemsSource="{Binding SnapshotsGroups, Mode=OneWay}"
+                            IsVisible="{Binding IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"/>
+
+            <HorizontalStackLayout Grid.Row="2"
+                                   IsVisible="{Binding IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                <Label Margin="10,10,5,5" FontAttributes="Bold">Location Name:</Label>
+                <Editor Margin="10,0" WidthRequest="150" 
+                        BindingContext="{Binding SelectedLocation, Mode=OneWay}" 
+                        Text="{Binding Name, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+
+            <Grid Grid.Row="3" IsVisible="{Binding IsViewGrouped, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}">
+                <HorizontalStackLayout Grid.Row="0"
+                                   IsVisible="{Binding IsInBrowseMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label Text="Add Location"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBeginAddLocation" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Select Location"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSwitchedToSelectMode" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="App Settings"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnGoToAppSettings" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Logs"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnGoToLogs" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="0"
+                                   IsVisible="{Binding IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label Text="Rename Location"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBeginRenameLocation" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Delete Location"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRemoveSelectedLocations" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Sync Location"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnImportSelectedLocations" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="0"
+                                   IsVisible="{Binding IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label Text="OK"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSaveChanges" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Cancel"
+                       Style="{StaticResource Hyperlink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRevertChanges" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+        <Button Text="Cancel"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Margin="0,170,0,0"
+                IsVisible="{Binding IsImportInProgress, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                Clicked="OnStopLocationsImport"/>
+    </Grid>
+</views:ViewBase>

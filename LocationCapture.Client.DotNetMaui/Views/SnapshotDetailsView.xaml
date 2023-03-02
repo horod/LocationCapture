@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:LocationCapture.Models;assembly=LocationCapture"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.SnapshotDetailsView">
+
+    <ContentPage.Resources>
+
+        <converters:CoordinateValueConverter x:Key="CoordinateValueConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+
+        <Style x:Key="Hyperlink" TargetType="Label">
+            <Setter Property="TextColor" Value="Blue" />
+            <Setter Property="TextDecorations" Value="Underline" />
+            <Setter Property="Margin" Value="10,10,0,10" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <views:PinchToZoomContainer Grid.Row="0">
+                <views:PinchToZoomContainer.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImageTapped" />
+                </views:PinchToZoomContainer.GestureRecognizers>
+                <Image x:Name="SnapshotContentPresenter"
+                       Aspect="AspectFit"
+                       Source="{Binding SnapshotContent, Mode=OneWay}" />
+            </views:PinchToZoomContainer>
+
+            <ScrollView Grid.Row="1" HeightRequest="100" Background="White" Padding="5"
+                        IsVisible="{Binding AreDetailsVisible, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Margin="5" FontAttributes="Bold">Longitude:</Label>
+                    <Label Grid.Row="0" Grid.Column="1" Margin="5" 
+                               Text="{Binding SnapshotDetails, Mode=OneWay, Converter={StaticResource CoordinateValueConverter}, ConverterParameter=Longitude}" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Margin="5" FontAttributes="Bold">Latitude:</Label>
+                    <Label Grid.Row="1" Grid.Column="1" Margin="5" 
+                               Text="{Binding SnapshotDetails, Mode=OneWay, Converter={StaticResource CoordinateValueConverter}, ConverterParameter=Latitude}" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Margin="5" FontAttributes="Bold">Altitude:</Label>
+                    <Label Grid.Row="2" Grid.Column="1" Margin="5" 
+                               Text="{Binding SnapshotDetails, Mode=OneWay, Converter={StaticResource CoordinateValueConverter}, ConverterParameter=Altitude}" />
+
+                    <Label Grid.Row="3" Grid.Column="0" Margin="5" FontAttributes="Bold">Date Created:</Label>
+                    <Label Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding SnapshotDetails.DateCreated, Mode=OneWay}" />
+
+                    <Label Grid.Row="4" Grid.Column="0" Margin="5" FontAttributes="Bold">File Name:</Label>
+                    <Label Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding SnapshotDetails.PictureFileName, Mode=OneWay}" />
+                </Grid>
+            </ScrollView>
+
+            <HorizontalStackLayout Grid.Row="2" IsVisible="{Binding IsCommandBarVisible, Converter={StaticResource BoolToVisConverter}, Mode=OneWay}" Background="White">
+                <Label Text="Show Details" FontAttributes="Bold" Margin="10,10,0,0">
+                </Label>
+                <Switch IsToggled="{Binding AreDetailsVisible, Mode=TwoWay}" Margin="0,-5,0,0" />
+                <Label Text="Show Location"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsGeolocationDataAvailable, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShowLocation" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Show Weather"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsGeolocationDataAvailable, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShowWeather" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+    </Grid>
+</views:ViewBase>

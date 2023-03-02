@@ -44,7 +44,7 @@ namespace LocationCapture.BL.UnitTests
             Assert.Equal(DateTime.Parse("2018-01-01T14:53:07").ToLocalTime(), weatherData.SunSet);
             Assert.Equal(86d, weatherData.Humidity);
             Assert.Equal(1007d, weatherData.Pressure);
-            Assert.Equal(4.1 * 0.001 * 3600, weatherData.WindSpeed);
+            Assert.Equal(Math.Round(4.1 * 0.001 * 3600, 2), weatherData.WindSpeed);
             Assert.Equal("Gentle Breeze", weatherData.WindSpeedName);
             Assert.Equal(250d, weatherData.WindDirection);
             Assert.Equal("West-southwest", weatherData.WindDirectionName);

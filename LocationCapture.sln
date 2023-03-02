@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{44790559-6025-43FB-83EF-824F8FF55D7D}"
 EndProject
@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocationCapture.Client.MVVM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocationCapture.Console", "LocationCapture.Console\LocationCapture.Console.csproj", "{77808CAA-2DCE-4385-99D2-E2154CDBA261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationCapture.DAL.Sqlite2", "LocationCapture.DAL.Sqlite2\LocationCapture.DAL.Sqlite2.csproj", "{29F57E11-CF33-4FEA-8574-E385C6CD5871}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocationCapture.DAL.Sqlite2", "LocationCapture.DAL.Sqlite2\LocationCapture.DAL.Sqlite2.csproj", "{29F57E11-CF33-4FEA-8574-E385C6CD5871}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationCapture.Client.DotNetMaui", "LocationCapture.Client.DotNetMaui\LocationCapture.Client.DotNetMaui.csproj", "{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -237,6 +239,30 @@ Global
 		{29F57E11-CF33-4FEA-8574-E385C6CD5871}.Release|x64.Build.0 = Release|Any CPU
 		{29F57E11-CF33-4FEA-8574-E385C6CD5871}.Release|x86.ActiveCfg = Release|Any CPU
 		{29F57E11-CF33-4FEA-8574-E385C6CD5871}.Release|x86.Build.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|ARM.Build.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|ARM.Deploy.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x64.Build.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x86.Build.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|ARM.Build.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|ARM.Deploy.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x64.ActiveCfg = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x64.Build.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x64.Deploy.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x86.ActiveCfg = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x86.Build.0 = Release|Any CPU
+		{1EB2FC10-B9DC-4255-AA21-43EDED55EC34}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

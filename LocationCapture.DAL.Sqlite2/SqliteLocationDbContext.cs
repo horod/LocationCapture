@@ -6,7 +6,10 @@ namespace LocationCapture.DAL.Sqlite2
     {
         public SqliteLocationDbContext() : base() { }
 
-        public SqliteLocationDbContext(string dbIdentifier) : base(dbIdentifier) { }
+        public SqliteLocationDbContext(string dbIdentifier) : base(dbIdentifier) 
+        {
+            Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

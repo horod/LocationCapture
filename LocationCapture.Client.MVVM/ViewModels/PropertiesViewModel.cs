@@ -3,6 +3,7 @@ using LocationCapture.Client.MVVM.Enums;
 using LocationCapture.Client.MVVM.Infrastructure;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
+using System.Threading.Tasks;
 
 namespace LocationCapture.Client.MVVM.ViewModels
 {
@@ -43,7 +44,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _dialogService = dialogService;
         }
 
-        public async void OnLoaded()
+        public async Task OnLoaded()
         {
             IsBusy = true;
             AppSettings = await _appSettingsProvider.GetAppSettingsAsync();
@@ -82,6 +83,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 RaisePropertyChanged(nameof(AppSettings));
             }
             IsBusy = false;
+        }
+
+        public async Task OnNavigatedTo()
+        {
+            await OnLoaded();
         }
     }
 }

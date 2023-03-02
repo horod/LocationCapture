@@ -210,5 +210,10 @@ namespace LocationCapture.Client.UWP.Services
                 _cameraRotationHelper.Dispose();
             }
         }
+
+        public void EndCapturingPhoto()
+        {
+            // do nothing in this implementation
+        }
     }
 }

@@ -121,8 +121,8 @@ namespace LocationCapture.WebAPI.Controllers
         public async Task<IActionResult> AddPicture([FromBody]ExpandoObject payload)
         {
             dynamic pictureFileDescriptor = payload;
-            var pictureFile = pictureFileDescriptor.pictureFile;
-            var pictureFileName = pictureFileDescriptor.pictureFileName;
+            var pictureFile = pictureFileDescriptor.pictureFile?.ToString();
+            var pictureFileName = pictureFileDescriptor.pictureFileName?.ToString();
 
             if (pictureFileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
             {

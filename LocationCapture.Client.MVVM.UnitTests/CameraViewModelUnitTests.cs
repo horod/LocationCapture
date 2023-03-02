@@ -17,7 +17,6 @@ namespace LocationCapture.Client.MVVM.UnitTests
     {
         private INavigationService _navigationService;
         private ICameraService _cameraService;
-        private IBitmapConverter _bitmapConverter;
         private IPictureService _pictureService;
         private ILocationSnapshotDataService _locationSnapshotDataService;
         private ILocationService _locationService;
@@ -78,6 +77,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                     return tcs.Task;
                 });
             _eventAggregator.GetEvent<GeolocationReadyEvent>().Subscribe(_ => receivedLocDesc = _);
+            _cameraService.CapturePhotoWithOrientationAsync()
+                .Returns(_ => Task.FromResult(new byte[10]));
 
             // Act
             var sit = CreateViewModel();
@@ -114,7 +115,6 @@ namespace LocationCapture.Client.MVVM.UnitTests
         {
             _navigationService = Substitute.For<INavigationService>();
             _cameraService = Substitute.For<ICameraService>();
-            _bitmapConverter = Substitute.For<IBitmapConverter>();
             _pictureService = Substitute.For<IPictureService>();
             _locationSnapshotDataService = Substitute.For<ILocationSnapshotDataService>();
             _locationService = Substitute.For<ILocationService>();
@@ -125,7 +125,6 @@ namespace LocationCapture.Client.MVVM.UnitTests
         {
             return new CameraViewModel(_navigationService,
                 _cameraService,
-                _bitmapConverter,
                 _pictureService,
                 _locationSnapshotDataService,
                 _locationService,

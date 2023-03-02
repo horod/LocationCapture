@@ -26,9 +26,11 @@ namespace LocationCapture.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            //services.AddMvc();
+            services.AddControllers();
 
             OptionsConfigurationServiceCollectionExtensions.Configure<AppSettings>(services, Configuration.GetSection("AppSettings"));
+
             services.AddTransient<ILocationContextFactory, LocationContextFactory>();
             services.AddTransient<ILocationDataService, LocationDataService>();
             services.AddTransient<ILocationSnapshotDataService, LocationSnapshotDataService>();
@@ -55,7 +57,14 @@ namespace LocationCapture.WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            //app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
