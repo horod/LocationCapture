@@ -1,19 +1,14 @@
-using LocationCapture.Client.DotNetMaui.Views;
 using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.ViewModels;
-using Microsoft.Extensions.Logging;
 
 namespace LocationCapture.Client.DotNetMaui.Views;
 
 public partial class SnapshotsView : ViewBase
 {
-    private readonly ILogger<SnapshotsView> _logger;
-
-    public SnapshotsView(SnapshotsViewModel viewModel, ILogger<SnapshotsView> logger)
+    public SnapshotsView(SnapshotsViewModel viewModel)
 	{
         BindingContext = viewModel;
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-        _logger = logger;
 
         InitializeComponent();
 	}
@@ -60,7 +55,7 @@ public partial class SnapshotsView : ViewBase
 
     private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ViewModel.SelectionMode) && ViewModel.SelectionMode == LocationCapture.Client.MVVM.Enums.SelectionMode.None)
+        if (e.PropertyName == nameof(ViewModel.SelectionMode) && ViewModel.SelectionMode == MVVM.Enums.SelectionMode.None)
         {
             snapshots.SelectedItems.Clear();
         }

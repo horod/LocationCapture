@@ -50,7 +50,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Converters\" />
-	  <Folder Include="Views\" />
 	</ItemGroup>
 
   <ItemGroup>
@@ -58,6 +57,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Maui.Graphics" Version="6.0.501" />
     <PackageReference Include="Prism.Core" Version="7.1.0.431" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Update="Views\SuggestionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
   </ItemGroup>
 
 </Project>

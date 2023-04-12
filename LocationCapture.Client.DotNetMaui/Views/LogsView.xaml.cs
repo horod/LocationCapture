@@ -1,8 +1,6 @@
-using LocationCapture.Client.DotNetMaui.Views;
 using LocationCapture.Client.MVVM.Enums;
 using LocationCapture.Client.MVVM.Infrastructure;
 using LocationCapture.Client.MVVM.Services;
-using LocationCapture.Client.MVVM.ViewModels;
 using LocationCapture.Models;
 
 namespace LocationCapture.Client.DotNetMaui.Views;
@@ -48,11 +46,13 @@ public class LogsViewModel : NotificationBase, INavigationTarget
 
         if (Directory.Exists(logsFolder))
         {
-            var logFiles = Directory.GetFiles(logsFolder);
+            var logFiles = Directory.GetFiles(logsFolder)
+                .OrderByDescending(x => x)
+                .ToList();
 
             if (logFiles.Any())
             {
-                var logs = File.ReadAllText(logFiles[0]);
+                var logs = File.ReadAllText(logFiles.First());
 
                 Logs = logs;
             }

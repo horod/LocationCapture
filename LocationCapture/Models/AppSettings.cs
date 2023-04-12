@@ -7,6 +7,8 @@
         public string MapsApiKey { get; set; }
         public string WeatherApiKey { get; set; }
         public string WeatherApiUri { get; set; }
+        public string SuggestionsApiUri { get; set; }
+        public string SuggestionsApiKey { get; set; }
         public string LocationCaptureApiUri { get; set; }
         public bool UseWebApi { get; set; }
 

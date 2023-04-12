@@ -32,12 +32,17 @@ namespace LocationCapture.BL
             }
         }
 
-        public async Task<TResponse> PostAsync<TPayload, TResponse>(string url, TPayload payload)
+        public async Task<TResponse> PostAsync<TPayload, TResponse>(string url, TPayload payload, string bearer = null)
             where TPayload : class
             where TResponse : class
         {
             using (var httpClient = new HttpClient())
             {
+                if (!string.IsNullOrEmpty(bearer))
+                {
+                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearer}");
+                }
+
                 return await InvokeHttpActionAsync<TPayload, TResponse>(url, httpClient.PostAsync, payload);
             }
         }

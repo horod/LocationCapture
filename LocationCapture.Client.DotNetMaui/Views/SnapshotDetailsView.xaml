@@ -74,18 +74,25 @@
                 <Label Text="Show Details" FontAttributes="Bold" Margin="10,10,0,0">
                 </Label>
                 <Switch IsToggled="{Binding AreDetailsVisible, Mode=TwoWay}" Margin="0,-5,0,0" />
-                <Label Text="Show Location"
+                <Label Text="Map"
                        Style="{StaticResource Hyperlink}"
                        IsVisible="{Binding IsGeolocationDataAvailable, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnShowLocation" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Show Weather"
+                <Label Text="Weather"
                        Style="{StaticResource Hyperlink}"
                        IsVisible="{Binding IsGeolocationDataAvailable, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnShowWeather" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Suggestions"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsGeolocationDataAvailable, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShowSuggestions" />
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.SuggestionsView">
+
+    <ContentPage.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <HorizontalStackLayout Grid.Row="0">
+                <Label Margin="10,10,5,5" FontAttributes="Bold" WidthRequest="150">Location Name:</Label>
+                <ScrollView Grid.Row="0" Grid.Column="1" Margin="10,10,10,0" WidthRequest="200" HeightRequest="50" VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Label Text="{Binding LocationName}" />
+                    </StackLayout>
+                </ScrollView>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Row="1">
+                <Label Margin="10,10,5,5" FontAttributes="Bold" WidthRequest="150">Suggestion Type:</Label>
+                <Picker Margin="10,0" WidthRequest="200"                      
+                        ItemsSource="{Binding SuggestionTypes}"
+                        SelectedItem="{Binding SelectedSuggestionType, Mode=TwoWay}"
+                        SelectedIndexChanged="Picker_SelectedIndexChanged"/>
+            </HorizontalStackLayout>
+
+            <ListView Grid.Row="2" Margin="10,20,10,0" RowHeight="500" x:Name="results"
+                      ItemsSource="{Binding LocationSuggestions, Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ScrollView VerticalOptions="FillAndExpand">
+                                <StackLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnSuggestionTapped" />
+                                    </StackLayout.GestureRecognizers>
+                                    <Label Text="{Binding Content}" />
+                                </StackLayout>
+                            </ScrollView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Grid>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+    </Grid>
+</views:ViewBase>

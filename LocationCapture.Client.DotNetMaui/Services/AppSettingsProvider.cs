@@ -60,6 +60,8 @@ namespace LocationCapture.Client.DotNetMaui.Services
                 DbFileName = "locationCapture.db",
                 WeatherApiUri = "http://api.openweathermap.org/data/2.5/weather",
                 WeatherApiKey = "Generate your Openweather API key by following the instructions: https://openweathermap.org/appid",
+                SuggestionsApiUri = "https://api.openai.com/v1/completions",
+                SuggestionsApiKey = "Generate your OpenAI API key here: https://platform.openai.com/account/api-keys",
                 LocationCaptureApiUri = "http://localhost:81/api"
             };
         }

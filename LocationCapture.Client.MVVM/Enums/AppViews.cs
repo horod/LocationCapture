@@ -9,6 +9,7 @@
         Geolocation,
         Weather,
         Properties,
-        Logs
+        Logs,
+        Suggestions
     }
 }
