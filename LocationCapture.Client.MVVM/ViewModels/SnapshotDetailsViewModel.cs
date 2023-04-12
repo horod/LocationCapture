@@ -105,6 +105,11 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _navigationService.GoTo(AppViews.Weather, NavigationParam);
         }
 
+        public void ShowSuggestions()
+        {
+            _navigationService.GoTo(AppViews.Suggestions, NavigationParam);
+        }
+
         public void GoBack()
         {
             _geolocationReadyToken?.Dispose();

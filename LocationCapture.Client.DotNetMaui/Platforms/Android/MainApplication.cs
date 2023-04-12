@@ -17,7 +17,7 @@ using Android.Runtime;
 
 namespace LocationCapture.Client.DotNetMaui
 {
-    [Application(UsesCleartextTraffic = true)]
+    [Application(UsesCleartextTraffic = true, LargeHeap = true)]
     public class MainApplication : MauiApplication
     {
         public MainApplication(IntPtr handle, JniHandleOwnership ownership)

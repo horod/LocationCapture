@@ -32,4 +32,9 @@ public partial class SnapshotDetailsView : ViewBase
     {
         ViewModel.ShowWeather();
     }
+
+    private void OnShowSuggestions(object sender, EventArgs e)
+    {
+        ViewModel.ShowSuggestions();
+    }
 }

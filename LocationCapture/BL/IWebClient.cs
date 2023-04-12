@@ -9,7 +9,7 @@ namespace LocationCapture.BL
         Task<TResponse> GetAsync<TResponse>(string url)
             where TResponse : class;
 
-        Task<TResponse> PostAsync<TPayload, TResponse>(string url, TPayload payload)
+        Task<TResponse> PostAsync<TPayload, TResponse>(string url, TPayload payload, string bearer = null)
             where TPayload : class
             where TResponse : class;
 

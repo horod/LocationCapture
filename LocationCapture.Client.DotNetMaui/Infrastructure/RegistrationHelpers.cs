@@ -21,6 +21,7 @@ namespace LocationCapture.Client.DotNetMaui.Infrastructure
             mauiAppBuilder.Services.AddTransient<WeatherViewModel>();
             mauiAppBuilder.Services.AddTransient<PropertiesViewModel>();
             mauiAppBuilder.Services.AddTransient<LogsViewModel>();
+            mauiAppBuilder.Services.AddTransient<SuggestionsViewModel>();
 
             return mauiAppBuilder;
         }
@@ -53,6 +54,7 @@ namespace LocationCapture.Client.DotNetMaui.Infrastructure
             mauiAppBuilder.Services.AddTransient<IWeatherDataService, WeatherDataService>();
             mauiAppBuilder.Services.AddTransient<ILoggingService, LoggingService>();
             mauiAppBuilder.Services.AddTransient<IWebClient, WebClient>();
+            mauiAppBuilder.Services.AddTransient<ISuggestionsService, SuggestionsService>();
             mauiAppBuilder.Services.AddSingleton<IMiniaturesCache, MiniaturesCache>();
 
             return mauiAppBuilder;
@@ -68,6 +70,7 @@ namespace LocationCapture.Client.DotNetMaui.Infrastructure
             mauiAppBuilder.Services.AddTransient<WeatherView>();
             mauiAppBuilder.Services.AddTransient<PropertiesView>();
             mauiAppBuilder.Services.AddTransient<LogsView>();
+            mauiAppBuilder.Services.AddTransient<SuggestionsView>();
 
             return mauiAppBuilder;
         }

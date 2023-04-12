@@ -37,6 +37,7 @@ namespace LocationCapture.Client.DotNetMaui.Services
             Routing.RegisterRoute($"{nameof(AppViews.Camera)}View", typeof(CameraView));
             Routing.RegisterRoute($"{nameof(AppViews.Weather)}View", typeof(WeatherView));
             Routing.RegisterRoute($"{nameof(AppViews.Logs)}View", typeof(LogsView));
+            Routing.RegisterRoute($"{nameof(AppViews.Suggestions)}View", typeof(SuggestionsView));
         }
     }
 }
