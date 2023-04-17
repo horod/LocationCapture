@@ -43,5 +43,10 @@ namespace LocationCapture.Client.MVVM.ViewModels
         {
             await OnLoaded();
         }
+
+        public Task SaveState()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

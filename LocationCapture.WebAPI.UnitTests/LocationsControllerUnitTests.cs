@@ -20,7 +20,7 @@ namespace LocationCapture.WebAPI.UnitTests
             Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Location, LocationDto>().ForMember(dest => dest.SnapshotsCount, opt => opt.MapFrom(src => src.LocationSnapshots.Count()));
+                cfg.CreateMap<Location, LocationDto>();
                 cfg.CreateMap<LocationForCreationDto, Location>();
                 cfg.CreateMap<LocationForUpdateDto, Location>();
             });
@@ -38,21 +38,12 @@ namespace LocationCapture.WebAPI.UnitTests
                 new Location
                 {
                     Id = 1,
-                    Name = "Warsaw",
-                    LocationSnapshots = new List<LocationSnapshot>
-                    {
-                        new LocationSnapshot(),
-                        new LocationSnapshot()
-                    }
+                    Name = "Warsaw"
                 },
                 new Location
                 {
                     Id = 2,
-                    Name = "Lisbon",
-                    LocationSnapshots = new List<LocationSnapshot>
-                    {
-                        new LocationSnapshot()
-                    }
+                    Name = "Lisbon"
                 }
             };
             var locationDataService = Substitute.For<ILocationDataService>();
@@ -75,7 +66,6 @@ namespace LocationCapture.WebAPI.UnitTests
             {
                 Assert.Equal(locations[i].Id, dtos[i].Id);
                 Assert.Equal(locations[i].Name, dtos[i].Name);
-                Assert.Equal(locations[i].LocationSnapshots.Count, dtos[i].SnapshotsCount);
             }
 
             WebApiTestsHelper.Unlock();

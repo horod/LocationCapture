@@ -23,6 +23,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IBitmapConverter _bitmapConverter;
         private readonly IDialogService _dialogService;
         private readonly IPlatformSpecificActions _platformSpecificActions;
+        private readonly IAppStateProvider _appStateProvider;
 
         public object NavigationParam { get; set; }
 
@@ -93,7 +94,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IPictureService pictureService,
             IBitmapConverter bitmapConverter,
             IDialogService dialogService,
-            IPlatformSpecificActions platformSpecificActions)
+            IPlatformSpecificActions platformSpecificActions,
+            IAppStateProvider appStateProvider)
         {
             _locationSnapshotDataService = locationSnapshotDataService;
             _navigationService = navigationService;
@@ -101,6 +103,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _bitmapConverter = bitmapConverter;
             _dialogService = dialogService;
             _platformSpecificActions = platformSpecificActions;
+            _appStateProvider = appStateProvider;
 
             SnapshotThumbnails = new ObservableCollection<SnapshotThumbnail>();
             SelectedThumbnails = new List<SnapshotThumbnail>();
@@ -114,7 +117,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
             var navParam = (SnapshotsViewNavParams)NavigationParam;
             _groupByCriteria = navParam.GroupByCriteria;
-            var payload = navParam.SnapshotsIdsource;
+            var payload = (object)navParam.SelectedLocation ?? navParam.SelectedGroup;
             Parent = payload;
             IEnumerable<LocationSnapshot> snapshots = null;
 
@@ -208,7 +211,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             var navParam = new SnapshotDetailsViewNavParams
             {
                 LocationSnapshot = clickedThumbnail.Snapshot,
-                SnapshotsViewState = NavigationParam
+                SnapshotsViewState = (SnapshotsViewNavParams)NavigationParam
             };
             _navigationService.GoTo(AppViews.SnapshotDetails, navParam);
         }
@@ -216,6 +219,22 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Snapshots,
+                NavigationParam = new SnapshotsViewNavParams
+                {
+                    GroupByCriteria = _groupByCriteria,
+                    SelectedLocation = Parent as Location,
+                    SelectedGroup = Parent as SnapshotGroup
+                }
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

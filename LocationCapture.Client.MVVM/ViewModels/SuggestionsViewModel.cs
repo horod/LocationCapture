@@ -21,6 +21,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IDialogService _dialogService;
         private readonly ILoggingService _loggingService;
         private readonly GeolocationViewModel _geolocationViewModel;
+        private readonly IAppStateProvider _appStateProvider;
+        private LocationSnapshot _snapshot;
 
         private readonly string ApiErrorMsg = "Suggestions API error. This might indicate an incorrect API URI or key.";
 
@@ -66,7 +68,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IConnectivityService connectivityService,
             IDialogService dialogService,
             ILoggingService loggingService,
-            GeolocationViewModel geolocationViewModel)
+            GeolocationViewModel geolocationViewModel,
+            IAppStateProvider appStateProvider)
         {
             _suggestionsService = suggestionsService;
             _navigationService = navigationService;
@@ -74,6 +77,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _dialogService = dialogService;
             _loggingService = loggingService;
             _geolocationViewModel = geolocationViewModel;
+            _appStateProvider = appStateProvider;
 
             SuggestionTypes = new List<LocationSuggestionType>
             {
@@ -83,18 +87,25 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 LocationSuggestionType.Top3Hotels,
                 LocationSuggestionType.Top3Restaurants
             };
-            SelectedSuggestionType = LocationSuggestionType.Description;
+            SelectedSuggestionType = (LocationSuggestionType)(- 1);
             LocationSuggestions = new ObservableCollection<LocationSuggestion>();
         }
 
         public void GoBack()
         {
-            _navigationService.GoTo(AppViews.SnapshotDetails, NavigationParam);
+            _navigationService.GoTo(AppViews.SnapshotDetails, ((SuggestionsViewNavParams)NavigationParam).SnapshotDetailsViewState);
         }
 
-        public async Task OnNavigatedTo()
+        public Task OnNavigatedTo()
         {
-            await OnSuggestionTypeChanged();
+            var navParam = (SuggestionsViewNavParams)NavigationParam;
+            var snapshotDetailsNavParam = navParam.SnapshotDetailsViewState;
+            
+            _snapshot = snapshotDetailsNavParam.LocationSnapshot;
+            LocationName = navParam.LocationName;
+            SelectedSuggestionType = navParam.SelectedSuggestionType;
+
+            return Task.CompletedTask;
         }
 
         public async Task OnSuggestionTypeChanged()
@@ -114,12 +125,9 @@ namespace LocationCapture.Client.MVVM.ViewModels
             {
                 LocationSuggestions.Clear();
 
-                var navParam = (SnapshotDetailsViewNavParams)NavigationParam;
-                var snapshot = navParam.LocationSnapshot;
-
                 if (SelectedSuggestionType == LocationSuggestionType.Description)
                 {
-                    var results = await _suggestionsService.GetLocationDescription(snapshot);
+                    var results = await _suggestionsService.GetLocationDescription(_snapshot);
                     LocationName = results.First().Content;
                     LocationSuggestions.Add(results.Last());
                 }
@@ -164,6 +172,22 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 await _dialogService.ShowAsync(ApiErrorMsg);
             }
             IsBusy = false;
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Suggestions,
+                NavigationParam = new SuggestionsViewNavParams
+                {
+                    SelectedSuggestionType = SelectedSuggestionType,
+                    LocationName = LocationName,
+                    SnapshotDetailsViewState = ((SuggestionsViewNavParams)NavigationParam).SnapshotDetailsViewState
+                }
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

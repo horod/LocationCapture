@@ -16,6 +16,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IBitmapConverter _bitmapConverter;
         private readonly IPictureService _pictureService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IAppStateProvider _appStateProvider;
         private SubscriptionToken _geolocationReadyToken;
 
         public object NavigationParam { get; set; }
@@ -62,12 +63,14 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public SnapshotDetailsViewModel(INavigationService navigationService,
             IBitmapConverter bitmapConverter,
             IPictureService pictureService,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IAppStateProvider appStateProvider)
         {
             _navigationService = navigationService;
             _pictureService = pictureService;
             _bitmapConverter = bitmapConverter;
             _eventAggregator = eventAggregator;
+            _appStateProvider = appStateProvider;
 
             AreDetailsVisible = false;
             IsCommandBarVisible = false;
@@ -107,7 +110,12 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
         public void ShowSuggestions()
         {
-            _navigationService.GoTo(AppViews.Suggestions, NavigationParam);
+            var navParam = new SuggestionsViewNavParams
+            {
+                SelectedSuggestionType = LocationCapture.Enums.LocationSuggestionType.Description,
+                SnapshotDetailsViewState = (SnapshotDetailsViewNavParams)NavigationParam
+            };
+            _navigationService.GoTo(AppViews.Suggestions, navParam);
         }
 
         public void GoBack()
@@ -125,6 +133,21 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.SnapshotDetails,
+                NavigationParam = new SnapshotDetailsViewNavParams
+                {
+                    LocationSnapshot = SnapshotDetails,
+                    SnapshotsViewState = ((SnapshotDetailsViewNavParams)NavigationParam).SnapshotsViewState
+                }
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

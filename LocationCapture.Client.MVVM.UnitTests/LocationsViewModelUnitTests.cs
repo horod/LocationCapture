@@ -306,7 +306,14 @@ namespace LocationCapture.Client.MVVM.UnitTests
             actionToTest(sit);
 
             // Assert
-            Assert.Equal(clickedEntity, actualNavParam.SnapshotsIdsource);
+            if (clickedEntity is Location)
+            {
+                Assert.Equal((Location)(object)clickedEntity, actualNavParam.SelectedLocation);
+            }
+            else if (clickedEntity is SnapshotGroup)
+            {
+                Assert.Equal((SnapshotGroup)(object)clickedEntity, actualNavParam.SelectedGroup);
+            }
             Assert.Equal(sit.GroupBy, actualNavParam.GroupByCriteria);
             Assert.Equal(AppViews.Snapshots, targetView);
         }
@@ -367,7 +374,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _locationDataImporter,
                 _dataSourceGovernor,
                 _connectivityService,
-                _platformSpecificActions);
+                _platformSpecificActions,
+                Substitute.For<IAppStateProvider>());
         }
     }
 }

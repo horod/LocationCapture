@@ -16,6 +16,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IConnectivityService _connectivityService;
         private readonly IDialogService _dialogService;
         private readonly ILoggingService _loggingService;
+        private readonly IAppStateProvider _appStateProvider;
 
         public object NavigationParam { get; set; }
 
@@ -37,13 +38,15 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IWeatherDataService weatherDataService,
             IConnectivityService connectivityService,
             IDialogService dialogService,
-            ILoggingService loggingService)
+            ILoggingService loggingService,
+            IAppStateProvider appStateProvider)
         {
             _navigationService = navigationService;
             _weatherDataService = weatherDataService;
             _connectivityService = connectivityService;
             _dialogService = dialogService;
             _loggingService = loggingService;
+            _appStateProvider = appStateProvider;
         }
 
         public async Task OnLoaded()
@@ -81,6 +84,17 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Weather,
+                NavigationParam = NavigationParam
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

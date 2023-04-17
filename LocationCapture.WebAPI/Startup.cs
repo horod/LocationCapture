@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using LocationCapture.BL;
 using LocationCapture.DAL;
 using LocationCapture.DAL.SqlServer;
@@ -26,7 +25,6 @@ namespace LocationCapture.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc();
             services.AddControllers();
 
             OptionsConfigurationServiceCollectionExtensions.Configure<AppSettings>(services, Configuration.GetSection("AppSettings"));
@@ -39,7 +37,7 @@ namespace LocationCapture.WebAPI
 
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Location, LocationDto>().ForMember(dest => dest.SnapshotsCount, opt => opt.MapFrom(src => src.LocationSnapshots.Count()));
+                cfg.CreateMap<Location, LocationDto>();
                 cfg.CreateMap<LocationForCreationDto, Location>();
                 cfg.CreateMap<LocationForUpdateDto, Location>();
                 cfg.CreateMap<LocationSnapshot, LocationSnapshotDto>();
@@ -56,8 +54,6 @@ namespace LocationCapture.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //app.UseMvc();
 
             app.UseRouting();
 

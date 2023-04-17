@@ -34,7 +34,8 @@ namespace LocationCapture.BL
             {
                 model = ModelName,
                 prompt = $"Here's a set of GPS coordinates: {locationSnapshot.Latitude}, {locationSnapshot.Longitude}. What's the name of this place? Structure the answer along the lines of 'The name of this place is...'.",
-                temperature = 0
+                temperature = 0,
+                max_tokens = 64
             };
             var response = await _webClient.PostAsync<object, dynamic>(appSettings.SuggestionsApiUri, payload, appSettings.SuggestionsApiKey);
 
@@ -49,12 +50,13 @@ namespace LocationCapture.BL
             {
                 model = ModelName,
                 prompt = $"Is there a place called {givenLocationName} close to {possibleLocationName}? Simply answer 'Yes' or 'No'.",
-                temperature = 0
+                temperature = 0,
+                max_tokens = 8
             };
             response = await _webClient.PostAsync<object, dynamic>(appSettings.SuggestionsApiUri, payload, appSettings.SuggestionsApiKey);
 
             bool? locationNamesMatch = ((string)response.choices[0].text)?.Trim()?.StartsWith("Yes");
-            var fullLocationName = locationNamesMatch == true ? $"{givenLocationName}, {possibleLocationName}" : possibleLocationName;
+            var fullLocationName = locationNamesMatch == true ? $"{givenLocationName}, close to {possibleLocationName}" : possibleLocationName;
 
             var descPayload = new
             {
@@ -98,7 +100,7 @@ namespace LocationCapture.BL
                 model = ModelName,
                 prompt = suggestionPrompt,
                 temperature = 0,
-                max_tokens = 512
+                max_tokens = 1024
             };
             var response = await _webClient.PostAsync<object, dynamic>(appSettings.SuggestionsApiUri, payload, appSettings.SuggestionsApiKey);
 

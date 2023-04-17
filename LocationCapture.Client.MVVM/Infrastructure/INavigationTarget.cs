@@ -7,5 +7,6 @@ namespace LocationCapture.Client.MVVM.Infrastructure
         object NavigationParam { get; set; }
         void GoBack();
         Task OnNavigatedTo();
+        Task SaveState();
     }
 }

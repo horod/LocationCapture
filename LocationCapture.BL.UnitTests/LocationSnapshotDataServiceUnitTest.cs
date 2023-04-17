@@ -32,6 +32,7 @@ namespace LocationCapture.BL.UnitTests
                 new LocationSnapshot{Id = 11, DateCreated = new DateTime(2016, 9, 11)},
                 new LocationSnapshot{Id = 12, DateCreated = new DateTime(2016, 8, 12)},
                 new LocationSnapshot{Id = 13, DateCreated = new DateTime(2016, 7, 13)},
+                new LocationSnapshot{Id = 14, DateCreated = new DateTime(2016, 6, 13)}
             };
             var expected = new List<SnapshotGroup>
             {
@@ -47,7 +48,8 @@ namespace LocationCapture.BL.UnitTests
                 new SnapshotGroup{Name = "October 2016", SnapshotIds = new List<int>{10}},
                 new SnapshotGroup{Name = "September 2016", SnapshotIds = new List<int>{11}},
                 new SnapshotGroup{Name = "August 2016", SnapshotIds = new List<int>{12}},
-                new SnapshotGroup{Name = "Older", SnapshotIds = new List<int>{13}}
+                new SnapshotGroup{Name = "July 2016", SnapshotIds = new List<int>{13}},
+                new SnapshotGroup{Name = "June 2016", SnapshotIds = new List<int>{14}}
             };
 
             GroupSnapshotsTest(_ => _.GroupSnapshotsByCreatedDate(currentDate), snapshots, expected);
@@ -73,7 +75,8 @@ namespace LocationCapture.BL.UnitTests
                 new SnapshotGroup{Name = "July 2017", SnapshotIds = new List<int>{1,2}},
                 new SnapshotGroup{Name = "March 2017", SnapshotIds = new List<int>{3,4}},
                 new SnapshotGroup{Name = "November 2016", SnapshotIds = new List<int>{5,6}},
-                new SnapshotGroup{Name = "Older", SnapshotIds = new List<int>{7,8}}
+                new SnapshotGroup{Name = "May 2016", SnapshotIds = new List<int>{7}},
+                new SnapshotGroup{Name = "March 2016", SnapshotIds = new List<int>{8}}
             };
 
             GroupSnapshotsTest(_ => _.GroupSnapshotsByCreatedDate(currentDate), snapshots, expected);

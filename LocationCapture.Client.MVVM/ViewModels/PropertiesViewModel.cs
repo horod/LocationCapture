@@ -1,6 +1,7 @@
 ﻿using LocationCapture.BL;
 using LocationCapture.Client.MVVM.Enums;
 using LocationCapture.Client.MVVM.Infrastructure;
+using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IDataSourceGovernor _dataSourceGovernor;
         private readonly IConnectivityService _connectivityService;
         private readonly IDialogService _dialogService;
+        private readonly IAppStateProvider _appStateProvider;
 
         public object NavigationParam { get; set; }
 
@@ -35,13 +37,15 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IAppSettingsProvider appSettingsProvider,
             IDataSourceGovernor dataSourceGovernor,
             IConnectivityService connectivityService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            IAppStateProvider appStateProvider)
         {
             _navigationService = navigationService;
             _appSettingsProvider = appSettingsProvider;
             _dataSourceGovernor = dataSourceGovernor;
             _connectivityService = connectivityService;
             _dialogService = dialogService;
+            _appStateProvider = appStateProvider;
         }
 
         public async Task OnLoaded()
@@ -88,6 +92,17 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Properties,
+                NavigationParam = NavigationParam
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

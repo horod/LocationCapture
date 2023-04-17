@@ -25,7 +25,11 @@ namespace LocationCapture.BL
 
             using (var context = _dataContextFactory.Create())
             {
-                var headersWithDates = Enumerable.Range(0, 12)
+                var oldestSnapshotDate = context.LocationSnapshots.Min(x => x.DateCreated);
+                var newestSnapshotDate = context.LocationSnapshots.Max(x => x.DateCreated);
+                var monthsApart = (newestSnapshotDate.Year - oldestSnapshotDate.Year) * 12 + newestSnapshotDate.Month - oldestSnapshotDate.Month;
+
+                var headersWithDates = Enumerable.Range(0, monthsApart + 1)
                     .Select(_ => lastDayOfCurrentMonth.AddMonths(-1 * _).ExtractLastDayOfMonth())
                     .Select(_ => new HeaderWithDate {
                         Header = $"{_.ToString("MMMM", CultureInfo.InvariantCulture)} {_.Year}",
@@ -41,18 +45,19 @@ namespace LocationCapture.BL
                         Name = _.Key,
                         SnapshotIds = _.Select(__ => __.Id).ToList()
                     });
-                var olderSnapshotIds = context.LocationSnapshots.Where(ls =>
-                    {
-                        return ls.DateCreated < lastDayOfCurrentMonth.AddMonths(-12);
-                    })
-                    .Select(ls => ls.Id)
-                    .ToList();
-                var olderGroup = olderSnapshotIds.Any()
-                    ? new[] { new SnapshotGroup { Name = "Older", SnapshotIds = olderSnapshotIds } }
-                    : new SnapshotGroup[0];
+                //var olderSnapshotIds = context.LocationSnapshots.Where(ls =>
+                //    {
+                //        return ls.DateCreated < lastDayOfCurrentMonth.AddMonths(-12);
+                //    })
+                //    .Select(ls => ls.Id)
+                //    .ToList();
+                //var olderGroup = olderSnapshotIds.Any()
+                //    ? new[] { new SnapshotGroup { Name = "Older", SnapshotIds = olderSnapshotIds } }
+                //    : new SnapshotGroup[0];
 
-                return snapshotGroups.Union(olderGroup)
-                    .ToList();
+                //return snapshotGroups.Union(olderGroup)
+                //    .ToList();
+                return snapshotGroups.ToList();
             }
         }
 

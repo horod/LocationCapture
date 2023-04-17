@@ -21,9 +21,14 @@ namespace LocationCapture.Client.DotNetMaui.Views
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            var navParam = query[nameof(INavigationTarget.NavigationParam)];
+            var navParamName = nameof(INavigationTarget.NavigationParam);
 
-            ViewModel.NavigationParam = navParam;
+            if (query.ContainsKey(navParamName))
+            {
+                var navParam = query[navParamName];
+
+                ViewModel.NavigationParam = navParam;
+            }
         }
 
         protected override async void OnNavigatedTo(NavigatedToEventArgs args)

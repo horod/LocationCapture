@@ -4,6 +4,7 @@ using LocationCapture.Client.MVVM.Events;
 using LocationCapture.Client.MVVM.Infrastructure;
 using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
+using LocationCapture.Enums;
 using LocationCapture.Models;
 using Prism.Events;
 using System;
@@ -21,6 +22,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly ILocationSnapshotDataService _locationSnapshotDataService;
         private readonly ILocationService _locationService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IAppStateProvider _appStateProvider;
 
         public object NavigationParam { get; set; }
 
@@ -36,7 +38,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IPictureService pictureService,
             ILocationSnapshotDataService locationSnapshotDataService,
             ILocationService locationService,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IAppStateProvider appStateProvider)
         {
             _navigationService = navigationService;
             _cameraService = cameraService;
@@ -44,6 +47,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _locationSnapshotDataService = locationSnapshotDataService;
             _locationService = locationService;
             _eventAggregator = eventAggregator;
+            _appStateProvider = appStateProvider;
         }
 
         public void OnCaptureElementLoaded(object sender, object e)
@@ -97,7 +101,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private int GetLocationId()
         {
             var navParam = (SnapshotsViewNavParams)NavigationParam;
-            var location = (Location)navParam.SnapshotsIdsource;
+            var location = navParam.SelectedLocation;
             return location.Id;
         }
 
@@ -115,6 +119,17 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Camera,
+                NavigationParam = NavigationParam
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

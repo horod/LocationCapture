@@ -51,6 +51,7 @@ namespace LocationCapture.Client.DotNetMaui.Infrastructure
             mauiAppBuilder.Services.AddTransient<IMapService, MapService>();
             mauiAppBuilder.Services.AddSingleton<IEventAggregator, EventAggregator>();
             mauiAppBuilder.Services.AddSingleton<IAppSettingsProvider, AppSettingsProvider>();
+            mauiAppBuilder.Services.AddSingleton<IAppStateProvider, AppStateProvider>();
             mauiAppBuilder.Services.AddTransient<IWeatherDataService, WeatherDataService>();
             mauiAppBuilder.Services.AddTransient<ILoggingService, LoggingService>();
             mauiAppBuilder.Services.AddTransient<IWebClient, WebClient>();
