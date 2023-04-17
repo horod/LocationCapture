@@ -11,7 +11,7 @@ namespace LocationCapture.Client.DotNetMaui.Services
 
             try
             {
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+                var request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(20));
 
                 var location = await Geolocation.Default.GetLocationAsync(request);
 

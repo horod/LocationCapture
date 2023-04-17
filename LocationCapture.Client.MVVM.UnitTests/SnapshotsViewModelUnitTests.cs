@@ -28,14 +28,14 @@ namespace LocationCapture.Client.MVVM.UnitTests
         [Fact]
         public async void OnLoaded_ShouldLoadSnapshotsByLocationId()
         {
-            var navParams = new SnapshotsViewNavParams { SnapshotsIdsource = new Location() };
+            var navParams = new SnapshotsViewNavParams { SelectedLocation = new Location() };
             await OnLoadedBase(navParams);
         }
 
         [Fact]
         public async void OnLoaded_ShouldLoadSnapshotsByIds()
         {
-            var navParams = new SnapshotsViewNavParams { SnapshotsIdsource = new SnapshotGroup() };
+            var navParams = new SnapshotsViewNavParams { SelectedGroup = new SnapshotGroup() };
             await OnLoadedBase(navParams);
         }
 
@@ -57,7 +57,15 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 Assert.Equal(_snapshots[index], sit.SnapshotThumbnails[index].Snapshot);
                 index++;
             }
-            Assert.Equal(navParams.SnapshotsIdsource, sit.Parent);
+
+            if(navParams.SelectedLocation != null)
+            {
+                Assert.Equal(navParams.SelectedLocation, sit.Parent);
+            }
+            else if (navParams.SelectedGroup != null)
+            {
+                Assert.Equal(navParams.SelectedGroup, sit.Parent);
+            }
         }
 
         [Fact]
@@ -65,7 +73,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
         {
             // Arrange
             SetUp();
-            var navParams = new SnapshotsViewNavParams { SnapshotsIdsource = new Location() };
+            var navParams = new SnapshotsViewNavParams { SelectedLocation = new Location() };
             var thumbnails = new List<SnapshotThumbnail>
             {
                 new SnapshotThumbnail{Snapshot = _snapshots[0]},
@@ -159,7 +167,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
 
             // Act
             var sit = CreateViewModel();
-            sit.NavigationParam = new object();
+            sit.NavigationParam = new SnapshotsViewNavParams();
             sit.OnSnapshotClicked(null, null);
 
             // Assert
@@ -247,7 +255,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _pictureService,
                 _bitmapConverter,
                 _dialogService,
-                _platformSpecificActions);
+                _platformSpecificActions,
+                Substitute.For<IAppStateProvider>());
         }
     }
 }

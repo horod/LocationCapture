@@ -29,7 +29,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
             SetUp();
             var navParam = new SnapshotsViewNavParams
             {
-                SnapshotsIdsource = new Location { Id = 2 }
+                SelectedLocation = new Location { Id = 2 }
             };
             var locDescriptor = new LocationDescriptor
             {
@@ -86,7 +86,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
             await sit.OnCaptureSnapshot();
 
             // Assert
-            Assert.Equal(((Location)navParam.SnapshotsIdsource).Id, newSnapshot.LocationId);
+            Assert.Equal((navParam.SelectedLocation).Id, newSnapshot.LocationId);
             Assert.True(newSnapshot.PictureFileName.StartsWith("LocationCapture_") 
                 && newSnapshot.PictureFileName.EndsWith(".jpg"));
             Assert.Equal(locDescriptor.Longitude, newSnapshot.Longitude);
@@ -128,7 +128,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _pictureService,
                 _locationSnapshotDataService,
                 _locationService,
-                _eventAggregator);
+                _eventAggregator,
+                Substitute.For<IAppStateProvider>());
         }
     }
 }

@@ -27,7 +27,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
             var navParam = new SnapshotDetailsViewNavParams
             {
                 LocationSnapshot = new LocationSnapshot(),
-                SnapshotsViewState = new object()
+                SnapshotsViewState = new SnapshotsViewNavParams()
             };
 
             // Act
@@ -101,7 +101,7 @@ namespace LocationCapture.Client.MVVM.UnitTests
 
             // Act
             var sit = CreateViewModel();
-            var viewState = new object();
+            var viewState = new SnapshotsViewNavParams();
             sit.NavigationParam = new SnapshotDetailsViewNavParams { SnapshotsViewState = viewState };
             sit.GoBack();
 
@@ -136,7 +136,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
             return new SnapshotDetailsViewModel(_navigationService,
                 _bitmapConverter,
                 _pictureService,
-                _eventAggregator);
+                _eventAggregator,
+                Substitute.For<IAppStateProvider>());
         }
     }
 }

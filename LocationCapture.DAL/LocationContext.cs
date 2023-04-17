@@ -13,7 +13,7 @@ namespace LocationCapture.DAL
             _dbContext = locationDbContext;
         }
 
-        public IEnumerable<Location> Locations => _dbContext.Locations.Include(_ => _.LocationSnapshots);
+        public IEnumerable<Location> Locations => _dbContext.Locations;
 
         public IEnumerable<LocationSnapshot> LocationSnapshots => _dbContext.LocationSnapshots;
 

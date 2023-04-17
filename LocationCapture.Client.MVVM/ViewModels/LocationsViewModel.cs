@@ -33,6 +33,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IDataSourceGovernor _dataSourceGovernor;
         private readonly IConnectivityService _connectivityService;
         private readonly IPlatformSpecificActions _platformSpecificActions;
+        private readonly IAppStateProvider _appStateProvider;
         private CancellationTokenSource _importCancellationTokenSource;
 
         public object NavigationParam { get; set; }
@@ -88,7 +89,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 var shouldRefreshData = true;
                 if (_GroupBy == value) shouldRefreshData = false;
                 SetProperty(ref _GroupBy, value);
-                if (shouldRefreshData) GroupByChanged();
+                if (shouldRefreshData) _ = GroupByChanged();
             }
         }
 
@@ -149,7 +150,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             ILocationDataImporter locationDataImporter,
             IDataSourceGovernor dataSourceGovernor,
             IConnectivityService connectivityService,
-            IPlatformSpecificActions platformSpecificActions)
+            IPlatformSpecificActions platformSpecificActions,
+            IAppStateProvider appStateProvider)
         {
             _locationDataService = locationDataService;
             _locationSnapshotDataService = locationSnapshotDataService;
@@ -160,6 +162,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _dataSourceGovernor = dataSourceGovernor;
             _connectivityService = connectivityService;
             _platformSpecificActions = platformSpecificActions;
+            _appStateProvider = appStateProvider;
 
             GroupByOptions = new List<GroupByCriteria>
             {
@@ -393,7 +396,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             var navParam = new SnapshotsViewNavParams
             {
                 GroupByCriteria = GroupBy,
-                SnapshotsIdsource = payload
+                SelectedLocation = payload is Location ? payload as Location : null,
+                SelectedGroup = payload is SnapshotGroup ? payload as SnapshotGroup : null,
             };
             _navigationService.GoTo(AppViews.Snapshots, navParam);
         }
@@ -401,6 +405,17 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
+        }
+
+        public async Task SaveState()
+        {
+            var appState = new AppState
+            {
+                CurrentView = AppViews.Locations,
+                NavigationParam = GroupBy
+            };
+
+            await _appStateProvider.SaveAppStateAsync(appState);
         }
     }
 }

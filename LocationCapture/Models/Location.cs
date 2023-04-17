@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace LocationCapture.Models
+﻿namespace LocationCapture.Models
 {
     public class Location : NotificationBase
     {
@@ -12,7 +10,5 @@ namespace LocationCapture.Models
             get { return _Name; }
             set { SetProperty(ref _Name, value); }
         }
-
-        public List<LocationSnapshot> LocationSnapshots { get; set; } = new List<LocationSnapshot>();
     }
 }
