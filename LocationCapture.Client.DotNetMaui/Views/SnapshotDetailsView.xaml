@@ -10,12 +10,7 @@
 
         <converters:CoordinateValueConverter x:Key="CoordinateValueConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
-
-        <Style x:Key="Hyperlink" TargetType="Label">
-            <Setter Property="TextColor" Value="Blue" />
-            <Setter Property="TextDecorations" Value="Underline" />
-            <Setter Property="Margin" Value="10,10,0,10" />
-        </Style>
+        
     </ContentPage.Resources>
 
     <Grid>

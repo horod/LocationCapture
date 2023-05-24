@@ -2,11 +2,6 @@
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Enums;
 using LocationCapture.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocationCapture.Client.DotNetMaui.Services
 {
@@ -83,6 +78,18 @@ namespace LocationCapture.Client.DotNetMaui.Services
             else
             {
                 return await _pictureServiceProxy.SaveSnapshotContentAsync(snapshot, data);
+            }
+        }
+
+        public async Task<bool> SnapshotContentExists(LocationSnapshot snapshot)
+        {
+            if (await _dataSourceGovernor.GetCurrentDataSourceTypeAsync() == DataSourceType.Local)
+            {
+                return await _pictureService.SnapshotContentExists(snapshot);
+            }
+            else
+            {
+                return await _pictureServiceProxy.SnapshotContentExists(snapshot);
             }
         }
     }

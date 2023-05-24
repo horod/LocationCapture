@@ -10,6 +10,7 @@
         Weather,
         Properties,
         Logs,
-        Suggestions
+        Suggestions,
+        SnapshotExportImport
     }
 }

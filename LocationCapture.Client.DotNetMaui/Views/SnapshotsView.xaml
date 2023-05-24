@@ -20,11 +20,6 @@
         <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         <converters:SelectionModeConverter x:Key="SelectionModeConverter" />
 
-        <Style x:Key="Hyperlink" TargetType="Label">
-            <Setter Property="TextColor" Value="Blue" />
-            <Setter Property="TextDecorations" Value="Underline" />
-            <Setter Property="Margin" Value="10,10,0,10" />
-        </Style>
     </ContentPage.Resources>
 
     <Grid>
@@ -56,11 +51,25 @@
                         <TapGestureRecognizer Tapped="OnSnapshotAdding" />
                     </Label.GestureRecognizers>
                 </Label>
+                <Label Text="Import Snapshot"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding CanAddSnapshot, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImportSnapshots" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Select Snapshot"
                        Style="{StaticResource Hyperlink}"
                        IsVisible="{Binding IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Reverse}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnSwitchedToSelectMode" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Export Snapshot"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInSelectMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnExportSelectedSnapshot" />
                     </Label.GestureRecognizers>
                 </Label>
                 <Label Text="Delete Snapshot"

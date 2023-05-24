@@ -158,5 +158,14 @@ namespace LocationCapture.Client.UWP.Services
                 // Picture does not exist in the specified location
             }
         }
+
+        public async Task<bool> SnapshotContentExists(LocationSnapshot snapshot)
+        {
+            var picturesFolder = KnownFolders.CameraRoll;
+
+            var pictureFile = await picturesFolder.TryGetItemAsync(snapshot.PictureFileName);
+
+            return pictureFile != null;
+        }
     }
 }

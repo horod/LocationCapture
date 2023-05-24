@@ -44,11 +44,13 @@ namespace LocationCapture.Client.DotNetMaui
 
                 if (Directory.Exists(logsFolder))
                 {
-                    var logFiles = Directory.GetFiles(logsFolder);
+                    var logFiles = Directory.GetFiles(logsFolder)
+                        .OrderByDescending(x => x)
+                        .ToList();
 
                     if (logFiles.Any())
                     {
-                        File.AppendAllText(logFiles[0], errorMessage);
+                        File.AppendAllText(logFiles.First(), errorMessage);
                     }
                 }
             }

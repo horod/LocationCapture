@@ -381,4 +381,10 @@
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
+    <Style x:Key="Hyperlink" TargetType="Label">
+        <Setter Property="TextColor" Value="Blue" />
+        <Setter Property="TextDecorations" Value="Underline" />
+        <Setter Property="Margin" Value="10,10,0,10" />
+    </Style>
+
 </ResourceDictionary>

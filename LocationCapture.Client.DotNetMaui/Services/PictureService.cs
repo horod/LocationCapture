@@ -115,5 +115,12 @@ namespace LocationCapture.Client.DotNetMaui.Services
 
             return data.Length;
         }
+
+        public Task<bool> SnapshotContentExists(LocationSnapshot snapshot)
+        {
+            var picturePath = Path.Combine(FileSystem.Current.AppDataDirectory, snapshot.PictureFileName);
+
+            return Task.FromResult(File.Exists(picturePath));
+        }
     }
 }
