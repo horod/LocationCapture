@@ -60,6 +60,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <MauiXaml Update="Views\SnapshotExportImportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\SuggestionsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

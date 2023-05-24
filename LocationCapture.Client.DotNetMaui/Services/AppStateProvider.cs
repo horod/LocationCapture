@@ -3,7 +3,6 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Enums;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace LocationCapture.Client.DotNetMaui.Services
 {
@@ -53,6 +52,7 @@ namespace LocationCapture.Client.DotNetMaui.Services
                 AppViews.SnapshotDetails => JsonSerializer.Deserialize<SnapshotDetailsViewNavParams>(navParamAsJson),
                 AppViews.Weather => JsonSerializer.Deserialize<SnapshotDetailsViewNavParams>(navParamAsJson),
                 AppViews.Suggestions => JsonSerializer.Deserialize<SuggestionsViewNavParams>(navParamAsJson),
+                AppViews.SnapshotExportImport => JsonSerializer.Deserialize<SnapshotExportImportViewNavParams>(navParamAsJson),
                 _ => throw new ArgumentOutOfRangeException(appState.CurrentView.ToString())
             };
 

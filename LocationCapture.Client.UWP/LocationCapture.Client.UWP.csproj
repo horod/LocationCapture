@@ -112,12 +112,14 @@
     <Compile Include="Infrastructure\DiFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AppSettingsProvider.cs" />
+    <Compile Include="Services\AppStateProvider.cs" />
     <Compile Include="Services\BitmapConverter.cs" />
     <Compile Include="Services\CameraRotationHelper.cs" />
     <Compile Include="Services\CameraService.cs" />
     <Compile Include="Services\ConnectivityService.cs" />
     <Compile Include="Services\DataSourceGovernor.cs" />
     <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\FilePickerService.cs" />
     <Compile Include="Services\ICameraRotationHelper.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\MapService.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\PictureService.cs" />
     <Compile Include="Services\PlatformSpecificActions.cs" />
+    <Compile Include="Services\SnapshotPackageManager.cs" />
     <Compile Include="Views\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>

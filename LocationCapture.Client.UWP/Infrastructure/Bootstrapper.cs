@@ -30,10 +30,13 @@ namespace LocationCapture.Client.UWP.Infrastructure
             container.RegisterType<IConnectivityService, ConnectivityService>();
             container.RegisterType<IWeatherDataService, WeatherDataService>();
             container.RegisterType<IAppSettingsProvider, AppSettingsProvider>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IAppStateProvider, AppStateProvider>(new ContainerControlledLifetimeManager());
             container.RegisterType<ICameraRotationHelper, CameraRotationHelper>();
             container.RegisterType<IEventAggregator, EventAggregator>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDataServiceFactory, DataServiceFactory>();
             container.RegisterType<ILocationDataImporter, LocationDataImporter>();
+            container.RegisterType<ISnapshotPackageManager, SnapshotPackageManager>();
+            container.RegisterType<IFilePickerService, FilePickerService>();
             container.RegisterType<IMiniaturesCache, MiniaturesCache>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoggingService, LoggingService>();
             container.RegisterType<IPlatformSpecificActions, PlatformSpecificActions>();

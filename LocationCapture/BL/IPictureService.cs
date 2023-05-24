@@ -15,5 +15,7 @@ namespace LocationCapture.BL
         Task<int> SaveSnapshotContentAsync(LocationSnapshot snapshot, byte[] data);
 
         Task RemoveSnapshotContentAsync(LocationSnapshot snapshot);
+
+        Task<bool> SnapshotContentExists(LocationSnapshot snapshot);
     }
 }

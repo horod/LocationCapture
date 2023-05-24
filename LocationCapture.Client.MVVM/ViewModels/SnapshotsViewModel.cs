@@ -24,6 +24,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IPlatformSpecificActions _platformSpecificActions;
         private readonly IAppStateProvider _appStateProvider;
+        private readonly ISnapshotPackageManager _packageManager;
+        private readonly IFilePickerService _filePickerService;
 
         public object NavigationParam { get; set; }
 
@@ -95,7 +97,9 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IBitmapConverter bitmapConverter,
             IDialogService dialogService,
             IPlatformSpecificActions platformSpecificActions,
-            IAppStateProvider appStateProvider)
+            IAppStateProvider appStateProvider,
+            ISnapshotPackageManager packageManager,
+            IFilePickerService filePickerService)
         {
             _locationSnapshotDataService = locationSnapshotDataService;
             _navigationService = navigationService;
@@ -104,6 +108,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _dialogService = dialogService;
             _platformSpecificActions = platformSpecificActions;
             _appStateProvider = appStateProvider;
+            _packageManager = packageManager;
+            _filePickerService = filePickerService;
 
             SnapshotThumbnails = new ObservableCollection<SnapshotThumbnail>();
             SelectedThumbnails = new List<SnapshotThumbnail>();
@@ -179,6 +185,51 @@ namespace LocationCapture.Client.MVVM.ViewModels
             RaisePropertyChanged(nameof(LocationInfo));
             SetDefaultView();
             IsBusy = false;
+        }
+
+        public async Task ExportSelectedSnapshots()
+        {
+            if (SelectedThumbnails.Count == 0 || SelectedThumbnails.Count > 10)
+            {
+                await _dialogService.ShowAsync("Please select at least one, but no more than 10 snapshots.");
+                return;
+            }
+
+            IsBusy = true;
+
+            var packagePath = await _packageManager.CompressSnapshots(SelectedThumbnails.Select(x => x.Snapshot).ToList());
+            var navParam = new SnapshotExportImportViewNavParams
+            {
+                Mode = SnapshotExportImportMode.Export,
+                PackagePath = packagePath,
+                SnapshotsViewState = (SnapshotsViewNavParams)NavigationParam
+            };
+
+            IsBusy = false;
+
+            _navigationService.GoTo(AppViews.SnapshotExportImport, navParam);
+        }
+
+        public async Task ImportSnapshots()
+        {
+            var packagePath = await _filePickerService.PickAsync("Select a snapshot package to import", FileType.Zip);
+
+            if (string.IsNullOrEmpty(packagePath)) return;
+
+            IsBusy = true;
+
+            _packageManager.DecompressPackage(packagePath);
+
+            var navParam = new SnapshotExportImportViewNavParams
+            {
+                Mode = SnapshotExportImportMode.Import,
+                PackagePath = packagePath,
+                SnapshotsViewState = (SnapshotsViewNavParams)NavigationParam
+            };
+
+            IsBusy = false;
+
+            _navigationService.GoTo(AppViews.SnapshotExportImport, navParam);
         }
 
         public void GoBack()

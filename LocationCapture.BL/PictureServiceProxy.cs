@@ -151,5 +151,19 @@ namespace LocationCapture.BL
 
             return data.Length;
         }
+
+        public async Task<bool> SnapshotContentExists(LocationSnapshot snapshot)
+        {
+            try
+            {
+                await GetSnapshotContentAsync(snapshot, false);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

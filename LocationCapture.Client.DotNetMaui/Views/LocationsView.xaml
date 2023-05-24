@@ -29,12 +29,6 @@
 
         <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         <converters:SelectionModeConverter x:Key="SelectionModeConverter" />
-
-        <Style x:Key="Hyperlink" TargetType="Label">
-            <Setter Property="TextColor" Value="Blue" />
-            <Setter Property="TextDecorations" Value="Underline" />
-            <Setter Property="Margin" Value="10,10,0,10" />
-        </Style>
     </ContentPage.Resources>
 
     <Grid>
@@ -126,7 +120,7 @@
 
                 <HorizontalStackLayout Grid.Row="0"
                                    IsVisible="{Binding IsInEditMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                    <Label Text="OK"
+                    <Label Text="Save"
                        Style="{StaticResource Hyperlink}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnSaveChanges" />

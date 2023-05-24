@@ -256,7 +256,9 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _bitmapConverter,
                 _dialogService,
                 _platformSpecificActions,
-                Substitute.For<IAppStateProvider>());
+                Substitute.For<IAppStateProvider>(),
+                Substitute.For<ISnapshotPackageManager>(),
+                Substitute.For<IFilePickerService>());
         }
     }
 }

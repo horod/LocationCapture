@@ -43,6 +43,11 @@ public partial class SnapshotsView : ViewBase
         ViewModel.OnSnapshotAdding();
     }
 
+    private async void OnImportSnapshots(object sender, EventArgs e)
+    {
+        await ViewModel.ImportSnapshots();
+    }
+
     private void OnSwitchedToSelectMode(object sender, EventArgs e)
     {
         ViewModel.BeginSelectSnapshot();
@@ -51,6 +56,11 @@ public partial class SnapshotsView : ViewBase
     private async void OnRemoveSelectedSnapshot(object sender, EventArgs e)
     {
         await ViewModel.RemoveSelectedSnapshots();
+    }
+
+    private async void OnExportSelectedSnapshot(object sender, EventArgs e)
+    {
+        await ViewModel.ExportSelectedSnapshots();
     }
 
     private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

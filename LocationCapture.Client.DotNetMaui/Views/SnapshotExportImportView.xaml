@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LocationCapture.Client.DotNetMaui.Views.SnapshotExportImportView"
+             xmlns:views="clr-namespace:LocationCapture.Client.DotNetMaui.Views"
+             xmlns:models="clr-namespace:LocationCapture.Client.MVVM.Models;assembly=LocationCapture.Client.MVVM"
+             xmlns:converters="clr-namespace:LocationCapture.Client.DotNetMaui.Converters">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="SnapshotDescriptorTemplate" x:DataType="models:SnapshotExportImportDescriptor">
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDescriptorTapped" />
+                </Grid.GestureRecognizers>
+
+                <Image Grid.Column="0"  Source="{Binding SnapshotThumbnail}" Aspect="AspectFill" WidthRequest="100" HeightRequest="100" Margin="0,1,0,1" />
+
+                <Grid Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Text="File Name:" FontAttributes="Bold" />
+                        <Label Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Text="{Binding Snapshot.PictureFileName, Mode=OneWay}" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" Text="Creation Date:" FontAttributes="Bold" />
+                        <Label Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Text="{Binding Snapshot.DateCreated, Mode=OneWay}" />
+
+                        <Label Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" Text="Size in MBs:" FontAttributes="Bold" />
+                        <Label Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Text="{Binding SnapshotSize, Mode=OneWay}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <CollectionView x:Name="descriptors"
+                            Grid.Row="0" Margin="10,0,10,0"
+                            ItemTemplate="{StaticResource SnapshotDescriptorTemplate}" 
+                            ItemsSource="{Binding SnapshotDescriptors, Mode=OneWay}"
+                            SelectionMode="Multiple">
+            </CollectionView>
+
+            <HorizontalStackLayout Grid.Row="1">
+                <Label Text="Save All"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInImportMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSaveAll" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Save Selected"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInImportMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSaveSelected" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Share All"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInExportMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShareAll" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Share Selected"
+                       Style="{StaticResource Hyperlink}"
+                       IsVisible="{Binding IsInExportMode, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShareSelected" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" 
+              Background="Black" Opacity="0.2">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsBusy, Mode=OneWay}" 
+                           HeightRequest="100" WidthRequest="100" />
+    </Grid>
+</views:ViewBase>
