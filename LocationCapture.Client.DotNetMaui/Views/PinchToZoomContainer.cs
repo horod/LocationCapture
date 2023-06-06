@@ -11,6 +11,9 @@ public static class DoubleExtensions
 public class PinchToZoomContainer : ContentView
 {
     double currentScale = 1; double startScale = 1; double xOffset = 0; double yOffset = 0;
+    bool swipedLeft = false; bool swipedRight = false;
+
+    public event EventHandler<SwipedEventArgs> Swiped;
 
     public PinchToZoomContainer()
     {
@@ -78,6 +81,36 @@ public class PinchToZoomContainer : ContentView
     {
         if (Content.Scale == 1)
         {
+            if (e.StatusType == GestureStatus.Running)
+            {
+                swipedLeft = false;
+                swipedRight = false;
+
+                if (e.TotalX < xOffset)
+                {
+                    swipedLeft = true;
+                }
+                else if (e.TotalX > xOffset)
+                {
+                    swipedRight = true;
+                }
+
+            }
+            else if (e.StatusType == GestureStatus.Completed)
+            {
+                if (swipedLeft)
+                {
+                    Swiped?.Invoke(this, new SwipedEventArgs(sender, SwipeDirection.Left));
+                }
+                else if (swipedRight)
+                {
+                    Swiped?.Invoke(this, new SwipedEventArgs(sender, SwipeDirection.Right));
+                }
+
+                swipedLeft = false;
+                swipedRight = false;
+            }
+
             return;
         }
 

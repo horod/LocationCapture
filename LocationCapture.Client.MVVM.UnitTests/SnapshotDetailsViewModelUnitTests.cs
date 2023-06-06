@@ -137,7 +137,10 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _bitmapConverter,
                 _pictureService,
                 _eventAggregator,
-                Substitute.For<IAppStateProvider>());
+                Substitute.For<IAppStateProvider>(),
+                Substitute.For<ILocationSnapshotDataService>(),
+                Substitute.For<ILoggingService>(),
+                Substitute.For<IDialogService>());
         }
     }
 }

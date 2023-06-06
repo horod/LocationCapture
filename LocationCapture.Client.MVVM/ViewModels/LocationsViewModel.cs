@@ -5,6 +5,7 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Enums;
 using LocationCapture.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IConnectivityService _connectivityService;
         private readonly IPlatformSpecificActions _platformSpecificActions;
         private readonly IAppStateProvider _appStateProvider;
+        private readonly ILoggingService _loggingService;
         private CancellationTokenSource _importCancellationTokenSource;
 
         public object NavigationParam { get; set; }
@@ -151,7 +153,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IDataSourceGovernor dataSourceGovernor,
             IConnectivityService connectivityService,
             IPlatformSpecificActions platformSpecificActions,
-            IAppStateProvider appStateProvider)
+            IAppStateProvider appStateProvider,
+            ILoggingService loggingService)
         {
             _locationDataService = locationDataService;
             _locationSnapshotDataService = locationSnapshotDataService;
@@ -163,6 +166,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _connectivityService = connectivityService;
             _platformSpecificActions = platformSpecificActions;
             _appStateProvider = appStateProvider;
+            _loggingService = loggingService;
 
             GroupByOptions = new List<GroupByCriteria>
             {
@@ -357,18 +361,28 @@ namespace LocationCapture.Client.MVVM.ViewModels
 
             IsBusy = true;
 
-            IsViewGrouped = (GroupBy != GroupByCriteria.None);
-            SetDefaultView();
-            if (GroupBy == GroupByCriteria.None)
+            try
             {
-                var locations = await _locationDataService.GetAllLocationsAsync();
-                Locations = new ObservableCollection<Location>(locations);
+                IsViewGrouped = (GroupBy != GroupByCriteria.None);
+                SetDefaultView();
+                if (GroupBy == GroupByCriteria.None)
+                {
+                    var locations = await _locationDataService.GetAllLocationsAsync();
+                    Locations = new ObservableCollection<Location>(locations);
+                }
+                else
+                {
+                    var dataFetchOperation = _locationSnapshotDataService.ChooseGroupByOperation(GroupBy);
+                    var snapshotGroups = await dataFetchOperation();
+                    SnapshotsGroups = new ObservableCollection<SnapshotGroup>(snapshotGroups);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var dataFetchOperation = _locationSnapshotDataService.ChooseGroupByOperation(GroupBy);
-                var snapshotGroups = await dataFetchOperation();
-                SnapshotsGroups = new ObservableCollection<SnapshotGroup>(snapshotGroups);
+                var locationsLoadingError = "Could not load locations.";
+                _loggingService.Warning(locationsLoadingError + " Details: {Ex}", ex);
+                await _dialogService.ShowAsync(locationsLoadingError);
+                GoBack();
             }
 
             IsBusy = false;

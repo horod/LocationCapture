@@ -21,8 +21,6 @@ namespace LocationCapture.BL
 
         public IEnumerable<SnapshotGroup> GroupSnapshotsByCreatedDate(DateTime currentDate)
         {
-            var lastDayOfCurrentMonth = currentDate.ExtractLastDayOfMonth();
-
             using (var context = _dataContextFactory.Create())
             {
                 var snapshotCount = context.LocationSnapshots.Count();
@@ -34,13 +32,17 @@ namespace LocationCapture.BL
 
                 var oldestSnapshotDate = context.LocationSnapshots.Min(x => x.DateCreated);
                 var newestSnapshotDate = context.LocationSnapshots.Max(x => x.DateCreated);
+
+                var headersWithDates = new List<HeaderWithDate>();
+
                 var monthsApart = (newestSnapshotDate.Year - oldestSnapshotDate.Year) * 12 + newestSnapshotDate.Month - oldestSnapshotDate.Month;
 
-                var headersWithDates = Enumerable.Range(0, monthsApart + 1)
-                    .Select(_ => lastDayOfCurrentMonth.AddMonths(-1 * _).ExtractLastDayOfMonth())
+                headersWithDates = Enumerable.Range(0, monthsApart + 1)
+                    .Select(_ => newestSnapshotDate.AddMonths(-1 * _).ExtractLastDayOfMonth())
                     .Select(_ => new HeaderWithDate {
                         Header = $"{_.ToString("MMMM", CultureInfo.InvariantCulture)} {_.Year}",
-                        Date = _});
+                        Date = _})
+                    .ToList();
 
                 var headersWithIds = headersWithDates.SelectMany(hwd => context.LocationSnapshots
                     .Where(ls => ls.DateCreated <= hwd.Date.ExtractEndOfDay() && ls.DateCreated >= hwd.Date.ExtractFirstDayOfMonth())

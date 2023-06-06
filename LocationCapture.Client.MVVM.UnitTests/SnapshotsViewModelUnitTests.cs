@@ -258,7 +258,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _platformSpecificActions,
                 Substitute.For<IAppStateProvider>(),
                 Substitute.For<ISnapshotPackageManager>(),
-                Substitute.For<IFilePickerService>());
+                Substitute.For<IFilePickerService>(),
+                Substitute.For<ILoggingService>());
         }
     }
 }

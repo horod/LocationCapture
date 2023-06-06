@@ -13,7 +13,7 @@
         
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid x:Name="MainContainer" Background="Black">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -21,7 +21,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <views:PinchToZoomContainer Grid.Row="0">
+            <views:PinchToZoomContainer Grid.Row="0" Swiped="OnImageSwiped">
                 <views:PinchToZoomContainer.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnImageTapped" />
                 </views:PinchToZoomContainer.GestureRecognizers>

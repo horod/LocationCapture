@@ -1,4 +1,5 @@
-﻿using LocationCapture.Client.MVVM.Models;
+﻿using LocationCapture.BL;
+using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
 using System.IO.Compression;
@@ -8,6 +9,13 @@ namespace LocationCapture.Client.DotNetMaui.Services
 {
     public class SnapshotPackageManager : ISnapshotPackageManager
     {
+        private readonly IPictureService _pictureService;
+
+        public SnapshotPackageManager(IPictureService pictureService)
+        {
+            _pictureService = pictureService;
+        }
+
         public async Task<string> CompressSnapshots(ICollection<LocationSnapshot> snapshots)
         {
             var now = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
@@ -23,8 +31,8 @@ namespace LocationCapture.Client.DotNetMaui.Services
 
                 await File.WriteAllTextAsync(metadataFilePath, metadata);
 
-                File.Copy(Path.Combine(FileSystem.Current.AppDataDirectory, snapshot.PictureFileName),
-                    Path.Combine(packageFolderPath, snapshot.PictureFileName));
+                var bytes = await _pictureService.GetSnapshotContentAsync(snapshot);
+                await File.WriteAllBytesAsync(Path.Combine(packageFolderPath, snapshot.PictureFileName), bytes);
             }
 
             var zipPath = Path.Combine(FileSystem.Current.CacheDirectory, $"{packageFolderName}.zip");
