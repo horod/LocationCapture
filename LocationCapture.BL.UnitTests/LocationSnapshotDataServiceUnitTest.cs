@@ -83,6 +83,25 @@ namespace LocationCapture.BL.UnitTests
         }
 
         [Fact]
+        public void GroupSnapshotsByCreatedDate_ShouldHandleAllSnapshotsFromTheSameMonth()
+        {
+            var currentDate = new DateTime(2017, 7, 2);
+            var snapshots = new List<LocationSnapshot>
+            {
+                new LocationSnapshot{Id = 1, DateCreated = new DateTime(2017, 5, 2)},
+                new LocationSnapshot{Id = 2, DateCreated = new DateTime(2017, 5, 1)},
+                new LocationSnapshot{Id = 3, DateCreated = new DateTime(2017, 5, 17)},
+                new LocationSnapshot{Id = 4, DateCreated = new DateTime(2017, 5, 16)},
+            };
+            var expected = new List<SnapshotGroup>
+            {
+                new SnapshotGroup{Name = "May 2017", SnapshotIds = new List<int>{1,2,3,4}}
+            };
+
+            GroupSnapshotsTest(_ => _.GroupSnapshotsByCreatedDate(currentDate), snapshots, expected);
+        }
+
+        [Fact]
         public void GroupSnapshotsByLongitude_ShouldHandleFullRangeOfLongitudes()
         {
             var snapshots = new List<LocationSnapshot>

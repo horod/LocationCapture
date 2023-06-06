@@ -5,6 +5,7 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Enums;
 using LocationCapture.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IAppStateProvider _appStateProvider;
         private readonly ISnapshotPackageManager _packageManager;
         private readonly IFilePickerService _filePickerService;
+        private readonly ILoggingService _loggingService;
+        private ICollection<SnapshoNavigationMapEntry> _snapshoNavigationMap;
 
         public object NavigationParam { get; set; }
 
@@ -99,7 +102,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IPlatformSpecificActions platformSpecificActions,
             IAppStateProvider appStateProvider,
             ISnapshotPackageManager packageManager,
-            IFilePickerService filePickerService)
+            IFilePickerService filePickerService,
+            ILoggingService loggingService)
         {
             _locationSnapshotDataService = locationSnapshotDataService;
             _navigationService = navigationService;
@@ -110,6 +114,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             _appStateProvider = appStateProvider;
             _packageManager = packageManager;
             _filePickerService = filePickerService;
+            _loggingService = loggingService;
 
             SnapshotThumbnails = new ObservableCollection<SnapshotThumbnail>();
             SelectedThumbnails = new List<SnapshotThumbnail>();
@@ -122,30 +127,65 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IsBusy = true;
 
             var navParam = (SnapshotsViewNavParams)NavigationParam;
-            _groupByCriteria = navParam.GroupByCriteria;
-            var payload = (object)navParam.SelectedLocation ?? navParam.SelectedGroup;
-            Parent = payload;
-            IEnumerable<LocationSnapshot> snapshots = null;
+            List<LocationSnapshot> snapshots = null;
 
-            RaisePropertyChanged(nameof(CanAddSnapshot));
-
-            if (payload is Location location)
+            try
             {
-                snapshots = await _locationSnapshotDataService.GetSnapshotsByLocationIdAsync(location.Id);
+                _groupByCriteria = navParam.GroupByCriteria;
+                var payload = (object)navParam.SelectedLocation ?? navParam.SelectedGroup;
+                Parent = payload;
+
+                RaisePropertyChanged(nameof(CanAddSnapshot));
+
+                if (payload is Location location)
+                {
+                    snapshots = (await _locationSnapshotDataService.GetSnapshotsByLocationIdAsync(location.Id))
+                        .ToList();
+                }
+                else if (payload is SnapshotGroup group)
+                {
+                    snapshots = (await _locationSnapshotDataService.GetSnapshotsByIdsAsync(group.SnapshotIds))
+                        .ToList();
+                }
             }
-            else if (payload is SnapshotGroup group)
+            catch (Exception ex)
             {
-                snapshots = await _locationSnapshotDataService.GetSnapshotsByIdsAsync(group.SnapshotIds);
+                var snapshotsLoadingError = "Could not load snapshots.";
+                _loggingService.Warning(snapshotsLoadingError + " Details: {Ex}", ex);
+                await _dialogService.ShowAsync(snapshotsLoadingError);
+                GoBack();
+                return;
             }
 
             IsBusy = false;
 
-            foreach (var snapshot in snapshots)
+            for (var i = 0; i < snapshots.Count; i++)
             {
+                var snapshot = snapshots[i];
+                int previousSnapshotId = 0, nextSnapshotId = 0;
+                
+                if (i > 0)
+                {
+                    previousSnapshotId = snapshots[i - 1].Id;
+                }
+
+                if (i < snapshots.Count - 1)
+                {
+                    nextSnapshotId = snapshots[i + 1].Id;
+                }
+
                 var miniature = await _pictureService.GetSnapshotMiniatureAsync(snapshot);
                 var thumbnail = await _bitmapConverter.GetBitmapAsync(miniature.Data);
-                SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail });
+                
+                SnapshotThumbnails.Add(new SnapshotThumbnail { Snapshot = miniature.Snapshot, Thumbnail = thumbnail, PreviousSnapshotId = previousSnapshotId, NextSnapshotId = nextSnapshotId });
             }
+
+            _snapshoNavigationMap = SnapshotThumbnails.Select(x => new SnapshoNavigationMapEntry
+            {
+                SnapshotId = x.Snapshot.Id,
+                NextSnapshotId = x.NextSnapshotId,
+                PreviousSnapshotId = x.PreviousSnapshotId
+            }).ToList();
 
             RaisePropertyChanged(nameof(LocationInfo));
         }
@@ -262,6 +302,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             var navParam = new SnapshotDetailsViewNavParams
             {
                 LocationSnapshot = clickedThumbnail.Snapshot,
+                SnapshoNavigationMap = _snapshoNavigationMap,
                 SnapshotsViewState = (SnapshotsViewNavParams)NavigationParam
             };
             _navigationService.GoTo(AppViews.SnapshotDetails, navParam);

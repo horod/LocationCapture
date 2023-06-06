@@ -375,7 +375,8 @@ namespace LocationCapture.Client.MVVM.UnitTests
                 _dataSourceGovernor,
                 _connectivityService,
                 _platformSpecificActions,
-                Substitute.For<IAppStateProvider>());
+                Substitute.For<IAppStateProvider>(),
+                Substitute.For<ILoggingService>());
         }
     }
 }

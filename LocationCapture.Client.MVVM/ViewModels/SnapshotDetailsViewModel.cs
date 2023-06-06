@@ -6,6 +6,9 @@ using LocationCapture.Client.MVVM.Models;
 using LocationCapture.Client.MVVM.Services;
 using LocationCapture.Models;
 using Prism.Events;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LocationCapture.Client.MVVM.ViewModels
@@ -17,7 +20,12 @@ namespace LocationCapture.Client.MVVM.ViewModels
         private readonly IPictureService _pictureService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IAppStateProvider _appStateProvider;
+        private readonly ILocationSnapshotDataService _locationSnapshotDataService;
+        private readonly IDialogService _dialogService;
+        private readonly ILoggingService _loggingService;
         private SubscriptionToken _geolocationReadyToken;
+        private LocationSnapshot _previous;
+        private LocationSnapshot _next;
 
         public object NavigationParam { get; set; }
 
@@ -60,17 +68,25 @@ namespace LocationCapture.Client.MVVM.ViewModels
             && SnapshotDetails?.Latitude > double.MinValue
             && SnapshotDetails?.Altitude > double.MinValue;
 
+        private SnapshotDetailsViewNavParams NavParam => (SnapshotDetailsViewNavParams)NavigationParam;
+
         public SnapshotDetailsViewModel(INavigationService navigationService,
             IBitmapConverter bitmapConverter,
             IPictureService pictureService,
             IEventAggregator eventAggregator,
-            IAppStateProvider appStateProvider)
+            IAppStateProvider appStateProvider,
+            ILocationSnapshotDataService locationSnapshotDataService,
+            ILoggingService loggingService,
+            IDialogService dialogService)
         {
             _navigationService = navigationService;
             _pictureService = pictureService;
             _bitmapConverter = bitmapConverter;
             _eventAggregator = eventAggregator;
             _appStateProvider = appStateProvider;
+            _locationSnapshotDataService = locationSnapshotDataService;
+            _loggingService = loggingService;
+            _dialogService = dialogService;
 
             AreDetailsVisible = false;
             IsCommandBarVisible = false;
@@ -79,12 +95,35 @@ namespace LocationCapture.Client.MVVM.ViewModels
         public async Task OnLoaded()
         {
             IsBusy = true;
+
             var navParam = (SnapshotDetailsViewNavParams)NavigationParam;
-            var data = await _pictureService.GetSnapshotContentAsync(navParam.LocationSnapshot);
-            SnapshotContent = await _bitmapConverter.GetBitmapAsync(data);
-            SnapshotDetails = navParam.LocationSnapshot;
             _geolocationReadyToken = _eventAggregator.GetEvent<GeolocationReadyEvent>().Subscribe(OnGeolocationReady);
-            RaisePropertyChanged(nameof(IsGeolocationDataAvailable));
+
+            try
+            {
+                var data = await _pictureService.GetSnapshotContentAsync(navParam.LocationSnapshot);
+                SnapshotContent = await _bitmapConverter.GetBitmapAsync(data);
+                SnapshotDetails = navParam.LocationSnapshot;
+                RaisePropertyChanged(nameof(IsGeolocationDataAvailable));
+
+                var navigationEntry = NavParam.SnapshoNavigationMap?.FirstOrDefault(x => x.SnapshotId == NavParam.LocationSnapshot.Id);
+
+                if (navigationEntry != null)
+                {
+                    _previous = (await _locationSnapshotDataService.GetSnapshotsByIdsAsync(new[] { navigationEntry.PreviousSnapshotId }))
+                        .FirstOrDefault();
+                    _next = (await _locationSnapshotDataService.GetSnapshotsByIdsAsync(new[] { navigationEntry.NextSnapshotId }))
+                            .FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                var snapshotContentLoadingError = "Could not load snapshot content.";
+                _loggingService.Warning(snapshotContentLoadingError + " Details: {Ex}", ex);
+                await _dialogService.ShowAsync(snapshotContentLoadingError);
+                GoBack();
+            }
+
             IsBusy = false;
         }
 
@@ -130,6 +169,40 @@ namespace LocationCapture.Client.MVVM.ViewModels
             IsCommandBarVisible = !IsCommandBarVisible;
         }
 
+        public async Task ImageSwipedLeft()
+        {
+            if (_next != null)
+            {
+                var navParam = new SnapshotDetailsViewNavParams
+                {
+                    LocationSnapshot = _next,
+                    SnapshoNavigationMap = NavParam.SnapshoNavigationMap,
+                    SnapshotsViewState = NavParam.SnapshotsViewState
+                };
+
+                NavigationParam = navParam;
+
+                await OnNavigatedTo();
+            }
+        }
+
+        public async Task ImageSwipedRight()
+        {
+            if (_previous != null)
+            {
+                var navParam = new SnapshotDetailsViewNavParams
+                {
+                    LocationSnapshot = _previous,
+                    SnapshoNavigationMap = NavParam.SnapshoNavigationMap,
+                    SnapshotsViewState = NavParam.SnapshotsViewState
+                };
+
+                NavigationParam = navParam;
+
+                await OnNavigatedTo();
+            }
+        }
+
         public async Task OnNavigatedTo()
         {
             await OnLoaded();
@@ -143,7 +216,8 @@ namespace LocationCapture.Client.MVVM.ViewModels
                 NavigationParam = new SnapshotDetailsViewNavParams
                 {
                     LocationSnapshot = SnapshotDetails,
-                    SnapshotsViewState = ((SnapshotDetailsViewNavParams)NavigationParam).SnapshotsViewState
+                    SnapshoNavigationMap = NavParam.SnapshoNavigationMap,
+                    SnapshotsViewState = NavParam.SnapshotsViewState
                 }
             };
 

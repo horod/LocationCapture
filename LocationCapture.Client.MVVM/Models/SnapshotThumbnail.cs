@@ -17,5 +17,9 @@ namespace LocationCapture.Client.MVVM.Models
             get { return _Thumbnail; }
             set { SetProperty(ref _Thumbnail, value); }
         }
+
+        public int PreviousSnapshotId { get; set; }
+
+        public int NextSnapshotId { get; set; }
     }
 }

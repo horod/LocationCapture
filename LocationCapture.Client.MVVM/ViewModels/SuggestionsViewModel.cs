@@ -141,7 +141,7 @@ namespace LocationCapture.Client.MVVM.ViewModels
             {
                 _loggingService.Warning(ApiErrorMsg + " Details: {Ex}", ex);
                 await _dialogService.ShowAsync(ApiErrorMsg);
-                _navigationService.GoTo(AppViews.SnapshotDetails, NavigationParam);
+                GoBack();
                 return;
             }
             IsBusy = false;
